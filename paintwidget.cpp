@@ -32,10 +32,10 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     {
         shape->paint(painter);
     }
-    if(shape)
+    /*if(shape)
     {
         shape->paint(painter);
-    }
+    }*/
 }
 
 void PaintWidget::mousePressEvent(QMouseEvent *event)
@@ -62,8 +62,8 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
         case Shape::Rect:
         {
             shape = new Rect;
-            // shape->setQPen(Qt::blue);
-            // shape->setQBrush(Qt::blue);
+            shape->setQPen(QPen(Qt::black));
+            shape->setQBrush(QBrush(Qt::black));
             break;
         }
     }
