@@ -70,12 +70,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::drawDepartureActionTriggered()
 {
-    emit changeCurrentShape(Shape::Ellipse);
+    emit changeCurrentShape(Shape::DepartPoint);
 }
 
 void MainWindow::drawDestinationActionTriggered()
 {
-    emit changeCurrentShape(Shape::Ellipse);
+    emit changeCurrentShape(Shape::DestPoint);
 }
 
 void MainWindow::drawRectActionTriggered()
