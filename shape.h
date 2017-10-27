@@ -7,29 +7,26 @@ class Shape
 {
 public:
     enum Code {
-        Line,
+        Ellipse,
+        // Line,
         Rect
     };
 
     Shape();
 
-    void setStart(QPoint s)
-    {
+    void setStart(QPoint s) {
         start = s;
     }
 
-    void setEnd(QPoint e)
-    {
+    void setEnd(QPoint e) {
         end = e;
     }
 
-    QPoint startPoint()
-    {
+    QPoint startPoint() {
         return start;
     }
 
-    QPoint endPoint()
-    {
+    QPoint endPoint() {
         return end;
     }
 

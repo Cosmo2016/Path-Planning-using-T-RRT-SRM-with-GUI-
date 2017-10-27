@@ -28,10 +28,13 @@ private:
 
 signals:
     void changeCurrentShape(Shape::Code newShape);
+    void saveFileToDisk();
 
 private slots:
-    void drawLineActionTriggered();
+    void drawDepartureActionTriggered();
+    void drawDestinationActionTriggered();
     void drawRectActionTriggered();
+    void saveFileActionTriggered();
 };
 
 #endif // MAINWINDOW_H
