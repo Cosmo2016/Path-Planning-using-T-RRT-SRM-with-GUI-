@@ -15,6 +15,13 @@ PaintWidget::PaintWidget(QWidget *parent)
 
 }
 
+QImage PaintWidget::getQImage()
+{
+    cout<<"getQImage"<<endl;
+    QPixmap qPixmap = QWidget::grab();
+    return qPixmap.toImage();
+}
+
 void PaintWidget::paintEvent(QPaintEvent *event)
 {
     /*if (event->type() == 8699)

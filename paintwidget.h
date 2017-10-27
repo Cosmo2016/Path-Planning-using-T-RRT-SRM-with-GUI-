@@ -37,16 +37,18 @@ public slots:
     void saveFile()
     {
         cout<<"Save file"<<endl;
-        this->qPixmap = QWidget::grab();
-        QImage qImage = this->qPixmap.toImage();
-        QPoint qPoint(0, 50);
-        QColor qColor(0, 0, 0);
+        QPixmap qPixmap;
+        qPixmap = QWidget::grab();
+        QImage qImage = qPixmap.toImage();
 
+        // for test / sample
+        /* QPoint qPoint(0, 50);
+        QColor qColor(0, 0, 0);
         for (int i = 0; i < 100; ++i)
         {
             qImage.setPixelColor(qPoint, qColor);
             qPoint.setX(i);
-        }
+        } */
 
 
         if (qImage.save("/Volumes/Cosmo/aaa.ppm", "PPM"))
@@ -62,6 +64,8 @@ public slots:
         }
     }
 
+    QImage getQImage();
+
 protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -75,7 +79,6 @@ private:
     Shape *shape;
     bool perm;
     QList<Shape*> shapeList;
-    QPixmap qPixmap;
 };
 
 #endif // PAINTWIDGET_H
