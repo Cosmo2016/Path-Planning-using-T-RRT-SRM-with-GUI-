@@ -3,10 +3,11 @@
 
 #include <QMainWindow>
 #include <QDebug>
+#include <iostream>
 
 #include "shape.h"
-#include "line.h"
-#include "rect.h"
+
+using namespace std;
 
 class PaintWidget : public QWidget
 {
@@ -16,11 +17,48 @@ public:
     PaintWidget(QWidget *parent = 0);
 
 public slots:
-    void setCurrentShape(Shape::Code s)
+    void setCurrentShape(const Shape::Code currentShape/*,
+                         const Qpen pen, const QBrush brush*/)
     {
-        if(s != currShapeCode)
+        if(currentShape != this->currShapeCode_)
         {
-            currShapeCode = s;
+            this->currShapeCode_ = currentShape;
+        }
+        /*if(pen != this->currPen_)
+        {
+            this->currPen_ = pen;
+        }
+        if(brush != this->currBrush_)
+        {
+            this->currBrush_ = brush;
+        }*/
+    }
+
+    void saveFile()
+    {
+        cout<<"Save file"<<endl;
+        this->qPixmap = QWidget::grab();
+        QImage qImage = this->qPixmap.toImage();
+        QPoint qPoint(0, 50);
+        QColor qColor(0, 0, 0);
+
+        for (int i = 0; i < 100; ++i)
+        {
+            qImage.setPixelColor(qPoint, qColor);
+            qPoint.setX(i);
+        }
+
+
+        if (qImage.save("/Volumes/Cosmo/aaa.ppm", "PPM"))
+        {
+            // this->qPixmap(this->size());
+            // this->render(&this->qPixmap);
+            this->render(&qImage);
+            cout<<"sava file success"<<endl;
+        }
+        else
+        {
+            cout<<"sava file fail"<<endl;
         }
     }
 
@@ -31,10 +69,13 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    Shape::Code currShapeCode;
+    Shape::Code currShapeCode_;
+    /*QPen currPen_;
+    QBrush currBrush_;*/
     Shape *shape;
     bool perm;
     QList<Shape*> shapeList;
+    QPixmap qPixmap;
 };
 
 #endif // PAINTWIDGET_H

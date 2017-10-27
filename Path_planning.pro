@@ -3,12 +3,11 @@
 # Project created by QtCreator 2017-08-08T03:03:55
 #
 #-------------------------------------------------
-
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = OMPL_demo
+TARGET = Path_planning
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -30,13 +29,15 @@ SOURCES += main.cpp\
     line.cpp \
     rect.cpp \
     shape.cpp \
-    paintwidget.cpp
+    paintwidget.cpp \
+    ellipse.cpp
 
 HEADERS  += mainwindow.h \
     line.h \
     rect.h \
     shape.h \
-    paintwidget.h
+    paintwidget.h \
+    ellipse.h
 
 LIBS += -stdlib=libc++
 CONFIG += c++11
@@ -44,4 +45,3 @@ QMAKE_CXXFLAGS += -stdlib=libc++
 QMAKE_CXXFLAGS += -std=c++11
 
 FORMS    += mainwindow.ui
-
