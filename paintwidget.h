@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "shape.h"
+#include "ellipse.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class PaintWidget : public QWidget
 
 public:
     PaintWidget(QWidget *parent = 0);
+    ~PaintWidget();
 
 public slots:
     void setCurrentShape(const Shape::Code currentShape/*,
@@ -76,9 +78,12 @@ private:
     Shape::Code currShapeCode_;
     /*QPen currPen_;
     QBrush currBrush_;*/
-    Shape *shape;
+    Shape *shape_;
     bool perm;
-    QList<Shape*> shapeList;
+    QList<Shape*> shapeList_;
+    QList<Shape*> path_;
+    Ellipse *starPoint_ = NULL;
+    Ellipse *goalPoint_ = NULL;
 };
 
 #endif // PAINTWIDGET_H

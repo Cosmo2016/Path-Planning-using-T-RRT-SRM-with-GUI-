@@ -16,19 +16,19 @@ public:
     Shape();
 
     void setStart(QPoint s) {
-        start = s;
+        this->startPoint_ = s;
     }
 
     void setEnd(QPoint e) {
-        end = e;
+        this->endPoint_ = e;
     }
 
     QPoint startPoint() {
-        return start;
+        return this->startPoint_;
     }
 
     QPoint endPoint() {
-        return end;
+        return this->endPoint_;
     }
 
     void setQBrush(const QBrush &qBrush)
@@ -54,8 +54,8 @@ public:
     void virtual paint(QPainter & painter) = 0;
 
 protected:
-    QPoint start;
-    QPoint end;
+    QPoint startPoint_;
+    QPoint endPoint_;
 
     QBrush qBrush_;
     QPen qPen_;

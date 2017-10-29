@@ -2,5 +2,4 @@
 
 Shape::Shape()
 {
-
 }

@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     shape.cpp \
     paintwidget.cpp \
     ellipse.cpp \
-    plan2deviroment.cpp
+    plan2deviroment.cpp \
+    point.cpp
 
 HEADERS  += mainwindow.h \
     line.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     shape.h \
     paintwidget.h \
     ellipse.h \
-    plan2deviroment.h
+    plan2deviroment.h \
+    point.h
 
 LIBS += -stdlib=libc++
 CONFIG += c++11
