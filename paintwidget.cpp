@@ -17,7 +17,12 @@ PaintWidget::PaintWidget(QWidget *parent)
 
 PaintWidget::~PaintWidget()
 {
-
+    foreach(Shape *shape, this->shapeList_)
+    {
+        delete shape;
+    }
+    delete this->starPoint_;
+    delete this->goalPoint_;
 }
 
 QImage PaintWidget::getQImage()
