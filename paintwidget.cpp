@@ -8,11 +8,9 @@
 using namespace std;
 
 PaintWidget::PaintWidget(QWidget *parent)
-    : QWidget(parent), currShapeCode_(Shape::DepartPoint), shape_(NULL), perm(false)
+    : QWidget(parent), currShapeCode_(Shape::DepartPoint), shape_(NULL) /*,perm(false)*/
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // QPaintEvent::registerEventType(8699);
-
 }
 
 PaintWidget::~PaintWidget()
@@ -34,11 +32,6 @@ QImage PaintWidget::getQImage()
 
 void PaintWidget::paintEvent(QPaintEvent *event)
 {
-    /*if (event->type() == 8699)
-    {
-        QPainter painter(this);
-        painter.drawPixmap(0, 0, this->size().height(), this->size().width(), qPixmap);
-    }*/
     cout<<"PaintWidget::paintEvent"<<endl;
     QPainter painter(this);
     /*painter.setPen(Qt::red);
@@ -57,10 +50,12 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     {
         this->goalPoint_->paint(painter);
     }
-    /*if(shape)
+
+    // draw path
+    foreach(QPoint path, this->path_)
     {
-        shape->paint(painter);
-    }*/
+        painter.drawPoint(path);
+    }
 }
 
 void PaintWidget::mousePressEvent(QMouseEvent *event)
@@ -77,9 +72,9 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
             {
                 this->starPoint_ = new Ellipse;
             }
-            this->starPoint_->setQPen(QPen(Qt::black));
+            this->starPoint_->setQPen(QPen(Qt::red));
             this->starPoint_->setQBrush(QBrush(Qt::red));
-            this->starPoint_->setStart(event->pos());
+            this->starPoint_->setAPoint(event->pos());
             break;
         }
         case Shape::DestPoint:
@@ -88,9 +83,9 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
             {
                 this->goalPoint_ = new Ellipse;
             }
-            this->goalPoint_->setQPen(QPen(Qt::black));
+            this->goalPoint_->setQPen(QPen(Qt::blue));
             this->goalPoint_->setQBrush(QBrush(Qt::blue));
-            this->goalPoint_->setStart(event->pos());
+            this->goalPoint_->setAPoint(event->pos());
             break;
         }
         case Shape::Rect:
@@ -99,8 +94,8 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
             this->shape_->setQPen(QPen(Qt::black));
             this->shape_->setQBrush(QBrush(Qt::black));
             this->shapeList_<<this->shape_;
-            this->shape_->setStart(event->pos());
-            this->shape_->setEnd(event->pos());
+            this->shape_->setAPoint(event->pos());
+            this->shape_->setBPoint(event->pos());
             break;
         }
     }
@@ -120,15 +115,15 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
     // if(this->shape_ && !perm)
     if(this->currShapeCode_ == Shape::DepartPoint)
     {
-        this->starPoint_->setStart(event->pos());
+        this->starPoint_->setAPoint(event->pos());
     }
     if (this->currShapeCode_ == Shape::DestPoint)
     {
-        this->goalPoint_->setStart(event->pos());
+        this->goalPoint_->setAPoint(event->pos());
     }
     if(this->shape_)
     {
-        this->shape_->setEnd(event->pos());
+        this->shape_->setBPoint(event->pos());
     }
 
     // this->update();
@@ -140,4 +135,15 @@ void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
     cout<<"PaintWidget::mouseReleaseEvent"<<endl;
     //  = true;
     this->shape_ = NULL;
+}
+
+QPoint PaintWidget::getStartPoint()
+{
+    return QPoint(this->starPoint_->getAPoint().x(),
+                  this->starPoint_->getAPoint().y());
+}
+QPoint PaintWidget::getGoalPoint()
+{
+    return QPoint(this->goalPoint_->getAPoint().x(),
+                  this->goalPoint_->getAPoint().y());
 }

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "plan2deviroment.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -37,6 +38,13 @@ MainWindow::MainWindow(QWidget *parent) :
     group->addAction(drawRectAction);
     bar->addAction(drawRectAction);
 
+    QAction *pathPlanAction = new QAction("Plan start", bar);
+    pathPlanAction->setToolTip(tr("Plan start"));
+    pathPlanAction->setStatusTip(tr("Plan start"));
+    pathPlanAction->setCheckable(true);
+    group->addAction(pathPlanAction);
+    bar->addAction(pathPlanAction);
+
     QAction *saveFileAction = new QAction("Save file", bar);
     saveFileAction->setToolTip(tr("Save file"));
     saveFileAction->setStatusTip(tr("Save file to disk."));
@@ -44,8 +52,14 @@ MainWindow::MainWindow(QWidget *parent) :
     group->addAction(saveFileAction);
     bar->addAction(saveFileAction);
 
-    PaintWidget *paintWidget = new PaintWidget(this);
+    // PaintWidget *paintWidget = new PaintWidget(this);
+    paintWidget = new PaintWidget(this);
     setCentralWidget(paintWidget);
+    QPalette pal(paintWidget->palette());
+    pal.setColor(QPalette::Background, Qt::white);
+    paintWidget->setAutoFillBackground(true);
+    paintWidget->setPalette(pal);
+    // paintWidget->show();
 
     connect(drawDepartureAction, SIGNAL(triggered()),
                     this, SLOT(drawDepartureActionTriggered()));
@@ -53,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
                     this, SLOT(drawDestinationActionTriggered()));
     connect(drawRectAction, SIGNAL(triggered()),
                     this, SLOT(drawRectActionTriggered()));
+    connect(pathPlanAction, SIGNAL(triggered()),
+                    this, SLOT(pathPlanActionTriggered()));
     connect(saveFileAction, SIGNAL(triggered()),
                     this, SLOT(saveFileActionTriggered()));
 
@@ -60,7 +76,6 @@ MainWindow::MainWindow(QWidget *parent) :
                     paintWidget, SLOT(setCurrentShape(Shape::Code)));
     connect(this, SIGNAL(saveFileToDisk()),
                     paintWidget, SLOT(saveFile()));
-
 }
 
 MainWindow::~MainWindow()
@@ -81,6 +96,21 @@ void MainWindow::drawDestinationActionTriggered()
 void MainWindow::drawRectActionTriggered()
 {
     emit changeCurrentShape(Shape::Rect);
+}
+
+void MainWindow::pathPlanActionTriggered()
+{
+    // emit changeCurrentShape(Shape::Rect);
+    // QImage qImage =
+    Plan2DEviroment plan2DEviroment(this->paintWidget);
+    QPoint startPoint = this->paintWidget->getStartPoint();
+    QPoint goalPoint = this->paintWidget->getGoalPoint();
+    if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
+                             goalPoint.y(), goalPoint.x()))
+    {
+        QList<QPoint> pathPoint = plan2DEviroment.recordSolution();
+        this->paintWidget->addPathPoint(pathPoint);
+    }
 }
 
 void MainWindow::saveFileActionTriggered()

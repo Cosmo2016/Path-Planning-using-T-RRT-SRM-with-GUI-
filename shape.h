@@ -14,21 +14,22 @@ public:
     };
 
     Shape();
+    virtual ~Shape();
 
-    void setStart(QPoint s) {
-        this->startPoint_ = s;
+    void setAPoint(QPoint s) {
+        this->aPoint_ = s;
     }
 
-    void setEnd(QPoint e) {
-        this->endPoint_ = e;
+    void setBPoint(QPoint e) {
+        this->bPoint_ = e;
     }
 
-    QPoint startPoint() {
-        return this->startPoint_;
+    QPoint getAPoint() {
+        return this->aPoint_;
     }
 
-    QPoint endPoint() {
-        return this->endPoint_;
+    QPoint getBPoint() {
+        return this->bPoint_;
     }
 
     void setQBrush(const QBrush &qBrush)
@@ -54,8 +55,8 @@ public:
     void virtual paint(QPainter & painter) = 0;
 
 protected:
-    QPoint startPoint_;
-    QPoint endPoint_;
+    QPoint aPoint_;
+    QPoint bPoint_;
 
     QBrush qBrush_;
     QPen qPen_;

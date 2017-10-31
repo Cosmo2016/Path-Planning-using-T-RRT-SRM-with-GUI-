@@ -11,17 +11,21 @@
 
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include "paintwidget.h"
 
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
 
-class Plan2DEviroment
+class Plan2DEviroment : public QObject
 {
+    Q_OBJECT
+
 public:
-    Plan2DEviroment(QImage);
-    bool plan(unsigned int start_row, unsigned int start_col, unsigned int goal_row, unsigned int goal_col);
-    void recordSolution();
+    Plan2DEviroment(PaintWidget * paintWidget) ;
+    bool plan(unsigned int start_row, unsigned int start_col,
+              unsigned int goal_row, unsigned int goal_col);
+    QList<QPoint> recordSolution();
     void save(const char *filename);
 
 private:
@@ -30,6 +34,9 @@ private:
     int maxWidth_;
     int maxHeight_;
     QImage qImage_;
+
+signals:
+    void sentPathPoint(QPoint newShape);
 };
 
 #endif // PLAN2DEVIROMENT_H

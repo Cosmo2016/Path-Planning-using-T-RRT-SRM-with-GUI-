@@ -7,5 +7,5 @@ Line::Line()
 
 void Line::paint(QPainter &painter)
 {
-    painter.drawLine(this->startPoint_, this->endPoint_);
+    painter.drawLine(this->aPoint_, this->bPoint_);
 }

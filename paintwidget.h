@@ -18,9 +18,12 @@ public:
     PaintWidget(QWidget *parent = 0);
     ~PaintWidget();
 
+    QPoint getStartPoint();
+    QPoint getGoalPoint();
+    QImage getQImage();
+
 public slots:
-    void setCurrentShape(const Shape::Code currentShape/*,
-                         const Qpen pen, const QBrush brush*/)
+    void setCurrentShape(const Shape::Code currentShape)
     {
         if(currentShape != this->currShapeCode_)
         {
@@ -66,22 +69,26 @@ public slots:
         }
     }
 
-    QImage getQImage();
+    void addPathPoint(QList<QPoint> pPoint)
+    {
+        this->path_.append(pPoint);
+        this->repaint();
+    }
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *);
+    void mousePressEvent(QMouseEvent *);
+    void mouseMoveEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
 
 private:
     Shape::Code currShapeCode_;
     /*QPen currPen_;
     QBrush currBrush_;*/
     Shape *shape_;
-    bool perm;
+    // bool perm;
     QList<Shape*> shapeList_;
-    QList<Shape*> path_;
+    QList<QPoint> path_; // To save the planner's path result
     Ellipse *starPoint_ = NULL;
     Ellipse *goalPoint_ = NULL;
 };

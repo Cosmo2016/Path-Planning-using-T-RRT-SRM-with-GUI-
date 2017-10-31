@@ -25,6 +25,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    PaintWidget *paintWidget;
 
 signals:
     void changeCurrentShape(Shape::Code newShape);
@@ -34,6 +35,7 @@ private slots:
     void drawDepartureActionTriggered();
     void drawDestinationActionTriggered();
     void drawRectActionTriggered();
+    void pathPlanActionTriggered();
     void saveFileActionTriggered();
 };
 

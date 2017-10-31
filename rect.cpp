@@ -9,6 +9,6 @@ void Rect::paint(QPainter &painter)
 {
     painter.setBrush(this->getQBursh());
     painter.setPen(this->getQPen());
-    painter.drawRect(startPoint_.x(), startPoint_.y(),
-                     endPoint_.x() - startPoint_.x(), endPoint_.y() - startPoint_.y());
+    painter.drawRect(aPoint_.x(), aPoint_.y(),
+                     bPoint_.x() - aPoint_.x(), bPoint_.y() - aPoint_.y());
 }
