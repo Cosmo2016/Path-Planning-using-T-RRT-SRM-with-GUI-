@@ -1,6 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "plan2deviroment.h"
+#include <thread>
+#include <iostream>
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -98,19 +102,31 @@ void MainWindow::drawRectActionTriggered()
     emit changeCurrentShape(Shape::Rect);
 }
 
-void MainWindow::pathPlanActionTriggered()
+/**
+ * Multi-thread
+ *
+ * @brief call_thread_path_planner
+ * @param paintWidget
+ */
+void call_thread_path_planner(PaintWidget *paintWidget)
 {
-    // emit changeCurrentShape(Shape::Rect);
-    // QImage qImage =
-    Plan2DEviroment plan2DEviroment(this->paintWidget);
-    QPoint startPoint = this->paintWidget->getStartPoint();
-    QPoint goalPoint = this->paintWidget->getGoalPoint();
+    Plan2DEviroment plan2DEviroment(paintWidget);
+    QPoint startPoint = paintWidget->getStartPoint();
+    QPoint goalPoint = paintWidget->getGoalPoint();
     if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
                              goalPoint.y(), goalPoint.x()))
     {
         QList<QPoint> pathPoint = plan2DEviroment.recordSolution();
-        this->paintWidget->addPathPoint(pathPoint);
+        // this->paintWidget->addPathPoint(pathPoint);
+        paintWidget->addPathPoint(pathPoint);
     }
+}
+
+void MainWindow::pathPlanActionTriggered()
+{
+    std::thread pathPlannerThread(call_thread_path_planner,
+                                  std::ref(this->paintWidget));
+    pathPlannerThread.join();
 }
 
 void MainWindow::saveFileActionTriggered()

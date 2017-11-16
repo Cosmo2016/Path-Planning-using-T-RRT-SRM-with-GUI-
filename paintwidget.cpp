@@ -3,9 +3,6 @@
 
 #include "line.h"
 #include "rect.h"
-#include "ellipse.h"
-
-using namespace std;
 
 PaintWidget::PaintWidget(QWidget *parent)
     : QWidget(parent), currShapeCode_(Shape::DepartPoint), shape_(NULL) /*,perm(false)*/
@@ -146,4 +143,56 @@ QPoint PaintWidget::getGoalPoint()
 {
     return QPoint(this->goalPoint_->getAPoint().x(),
                   this->goalPoint_->getAPoint().y());
+}
+
+void PaintWidget::addPathPoint(QList<QPoint> pPoint)
+{
+    this->path_.append(pPoint);
+    this->repaint();
+}
+
+void PaintWidget::setCurrentShape(const Shape::Code currentShape)
+{
+    if(currentShape != this->currShapeCode_)
+    {
+        this->currShapeCode_ = currentShape;
+    }
+    /*if(pen != this->currPen_)
+    {
+        this->currPen_ = pen;
+    }
+    if(brush != this->currBrush_)
+    {
+        this->currBrush_ = brush;
+    }*/
+}
+
+void PaintWidget::saveFile()
+{
+    cout<<"Save file"<<endl;
+    QPixmap qPixmap;
+    qPixmap = QWidget::grab();
+    QImage qImage = qPixmap.toImage();
+
+    // for test / sample
+    /* QPoint qPoint(0, 50);
+    QColor qColor(0, 0, 0);
+    for (int i = 0; i < 100; ++i)
+    {
+        qImage.setPixelColor(qPoint, qColor);
+        qPoint.setX(i);
+    } */
+
+
+    if (qImage.save("/Volumes/Cosmo/aaa.ppm", "PPM"))
+    {
+        // this->qPixmap(this->size());
+        // this->render(&this->qPixmap);
+        this->render(&qImage);
+        cout<<"sava file success"<<endl;
+    }
+    else
+    {
+        cout<<"sava file fail"<<endl;
+    }
 }

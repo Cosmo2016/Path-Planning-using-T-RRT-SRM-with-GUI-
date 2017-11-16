@@ -11,3 +11,4 @@ void Ellipse::paint(QPainter &painter)
     painter.setPen(this->getQPen());
     painter.drawEllipse(aPoint_, 5, 5);
 }
+
