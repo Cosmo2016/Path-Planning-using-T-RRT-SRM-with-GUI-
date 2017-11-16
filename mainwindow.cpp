@@ -126,7 +126,7 @@ void MainWindow::pathPlanActionTriggered()
 {
     std::thread pathPlannerThread(call_thread_path_planner,
                                   std::ref(this->paintWidget));
-    pathPlannerThread.join();
+    pathPlannerThread.detach();
 }
 
 void MainWindow::saveFileActionTriggered()
