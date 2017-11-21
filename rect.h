@@ -7,7 +7,7 @@ class Rect : public Shape
 {
 public:
     Rect();
-    void paint(QPainter &painter);
+    void paint(QPaintDevice*) override;
 };
 
 #endif // RECT_H

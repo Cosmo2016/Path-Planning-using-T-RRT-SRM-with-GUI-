@@ -7,7 +7,7 @@ class Line : public Shape
 {
 public:
     Line();
-    void paint(QPainter &painter);
+    void paint(QPaintDevice*) override;
 };
 
 #endif // LINE_H

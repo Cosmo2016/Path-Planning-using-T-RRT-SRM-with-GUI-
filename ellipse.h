@@ -7,7 +7,7 @@ class Ellipse : public Shape
 {
 public:
     Ellipse();
-    void paint(QPainter &painter);
+    void paint(QPaintDevice*) override;
 };
 
 #endif // ELLIPSE_H

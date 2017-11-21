@@ -35,6 +35,7 @@ private slots:
     void drawDepartureActionTriggered();
     void drawDestinationActionTriggered();
     void drawRectActionTriggered();
+    void drawPersonActionTriggered();
     void pathPlanActionTriggered();
     void saveFileActionTriggered();
 };

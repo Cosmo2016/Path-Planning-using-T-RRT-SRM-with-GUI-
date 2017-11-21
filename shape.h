@@ -10,49 +10,26 @@ public:
         DepartPoint,
         DestPoint,
         // Line,
-        Rect
+        Rect,
+        Person
     };
 
     Shape();
     virtual ~Shape();
 
-    void setAPoint(QPoint s) {
-        this->aPoint_ = s;
-    }
+    void setAPoint(const QPoint);
+    QPoint getAPoint() const;
 
-    void setBPoint(QPoint e) {
-        this->bPoint_ = e;
-    }
+    void setBPoint(const QPoint);
+    QPoint getBPoint() const;
 
-    QPoint getAPoint() {
-        return this->aPoint_;
-    }
+    void setQBrush(const QBrush);
+    QBrush getQBursh() const;
 
-    QPoint getBPoint() {
-        return this->bPoint_;
-    }
+    void setQPen(const QPen&);
+    QPen getQPen() const;
 
-    void setQBrush(const QBrush &qBrush)
-    {
-        this->qBrush_ = qBrush;
-    }
-
-    QBrush getQBursh() const
-    {
-        return this->qBrush_;
-    }
-
-    void setQPen(const QPen &qPen)
-    {
-        this->qPen_ = qPen;
-    }
-
-    QPen getQPen() const
-    {
-        return this->qPen_;
-    }
-
-    void virtual paint(QPainter & painter) = 0;
+    void virtual paint(QPaintDevice*) = 0;
 
 protected:
     QPoint aPoint_;

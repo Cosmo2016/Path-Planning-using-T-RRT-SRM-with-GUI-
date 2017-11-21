@@ -5,8 +5,9 @@ Ellipse::Ellipse()
 
 }
 
-void Ellipse::paint(QPainter &painter)
+void Ellipse::paint(QPaintDevice *qWidget)
 {
+    QPainter painter(qWidget);
     painter.setBrush(this->getQBursh());
     painter.setPen(this->getQPen());
     painter.drawEllipse(aPoint_, 5, 5);

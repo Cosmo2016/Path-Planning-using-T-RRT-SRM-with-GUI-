@@ -7,7 +7,7 @@ class Point : public Shape
 {
 public:
     Point();
-    void paint(QPainter &painter);
+    void paint(QPaintDevice* qWidget) override;
 };
 
 #endif // POINT_H

@@ -12,6 +12,7 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
 #include "paintwidget.h"
+#include "point.h"
 
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
@@ -25,18 +26,17 @@ public:
     Plan2DEviroment(PaintWidget * paintWidget) ;
     bool plan(unsigned int start_row, unsigned int start_col,
               unsigned int goal_row, unsigned int goal_col);
-    QList<QPoint> recordSolution();
-    void save(const char *filename);
+    QList<Point> recordSolution();
+    void save(const char *);
 
 private:
-    bool isStateValid(const ob::State *state);
+    bool isStateValid(const ob::State *);
+    bool transactionTest(); // Kernel implement here!!!
     og::SimpleSetupPtr ss_;
     int maxWidth_;
     int maxHeight_;
     QImage qImage_;
-
-signals:
-    void sentPathPoint(QPoint newShape);
+    QPoint personPos_; // Temporary only one person
 };
 
 #endif // PLAN2DEVIROMENT_H

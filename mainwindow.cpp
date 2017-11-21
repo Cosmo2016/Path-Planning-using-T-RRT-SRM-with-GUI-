@@ -42,6 +42,14 @@ MainWindow::MainWindow(QWidget *parent) :
     group->addAction(drawRectAction);
     bar->addAction(drawRectAction);
 
+    QAction *drawPersonAction = new QAction("Person", bar);
+    // drawRectAction->setIcon(QIcon(":/rectangel.png"));
+    drawPersonAction->setToolTip(tr("Draw a person"));
+    drawPersonAction->setStatusTip(tr("Draw a person"));
+    drawPersonAction->setCheckable(true);
+    group->addAction(drawPersonAction);
+    bar->addAction(drawPersonAction);
+
     QAction *pathPlanAction = new QAction("Plan start", bar);
     pathPlanAction->setToolTip(tr("Plan start"));
     pathPlanAction->setStatusTip(tr("Plan start"));
@@ -56,7 +64,6 @@ MainWindow::MainWindow(QWidget *parent) :
     group->addAction(saveFileAction);
     bar->addAction(saveFileAction);
 
-    // PaintWidget *paintWidget = new PaintWidget(this);
     paintWidget = new PaintWidget(this);
     setCentralWidget(paintWidget);
     QPalette pal(paintWidget->palette());
@@ -75,11 +82,14 @@ MainWindow::MainWindow(QWidget *parent) :
                     this, SLOT(pathPlanActionTriggered()));
     connect(saveFileAction, SIGNAL(triggered()),
                     this, SLOT(saveFileActionTriggered()));
+    // Draw a person
+    connect(drawPersonAction, SIGNAL(triggered()),
+                    this, SLOT(drawPersonActionTriggered()));
 
     connect(this, SIGNAL(changeCurrentShape(Shape::Code)),
                     paintWidget, SLOT(setCurrentShape(Shape::Code)));
     connect(this, SIGNAL(saveFileToDisk()),
-                    paintWidget, SLOT(saveFile()));
+                    paintWidget, SLOT(save2File()));
 }
 
 MainWindow::~MainWindow()
@@ -102,6 +112,12 @@ void MainWindow::drawRectActionTriggered()
     emit changeCurrentShape(Shape::Rect);
 }
 
+void MainWindow::drawPersonActionTriggered()
+{
+    emit changeCurrentShape(Shape::Person);
+}
+
+
 /**
  * Multi-thread
  *
@@ -114,9 +130,8 @@ void call_thread_path_planner(PaintWidget *paintWidget)
     QPoint startPoint = paintWidget->getStartPoint();
     QPoint goalPoint = paintWidget->getGoalPoint();
     if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
-                             goalPoint.y(), goalPoint.x()))
-    {
-        QList<QPoint> pathPoint = plan2DEviroment.recordSolution();
+                             goalPoint.y(), goalPoint.x())) {
+        QList<Point> pathPoint = plan2DEviroment.recordSolution();
         // this->paintWidget->addPathPoint(pathPoint);
         paintWidget->addPathPoint(pathPoint);
     }

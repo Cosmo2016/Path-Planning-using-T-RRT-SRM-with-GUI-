@@ -5,7 +5,10 @@ Line::Line()
 
 }
 
-void Line::paint(QPainter &painter)
+void Line::paint(QPaintDevice* qWidget)
 {
-    painter.drawLine(this->aPoint_, this->bPoint_);
+    QPainter qPainter(qWidget);
+    qPainter.setBrush(this->getQBursh());
+    qPainter.setPen(this->getQPen());
+    qPainter.drawLine(this->aPoint_, this->bPoint_);
 }

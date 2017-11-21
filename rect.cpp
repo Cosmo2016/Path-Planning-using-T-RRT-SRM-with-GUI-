@@ -5,8 +5,9 @@ Rect::Rect()
 
 }
 
-void Rect::paint(QPainter &painter)
+void Rect::paint(QPaintDevice* qWidget)
 {
+    QPainter painter(qWidget);
     painter.setBrush(this->getQBursh());
     painter.setPen(this->getQPen());
     painter.drawRect(aPoint_.x(), aPoint_.y(),

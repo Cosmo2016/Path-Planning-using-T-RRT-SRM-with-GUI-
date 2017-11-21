@@ -7,6 +7,7 @@
 
 #include "shape.h"
 #include "ellipse.h"
+#include "point.h"
 
 using namespace std;
 
@@ -24,8 +25,8 @@ public:
 
 public slots:
     void setCurrentShape(const Shape::Code currentShape);
-    void saveFile();
-    void addPathPoint(QList<QPoint> pPoint);
+    void save2File();
+    void addPathPoint(QList<Point> &pPoint);
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -39,10 +40,11 @@ private:
     QBrush currBrush_;*/
     Shape *shape_;
     // bool perm;
-    QList<Shape*> shapeList_;
-    QList<QPoint> path_; // To save the planner's path result
+    QList<Shape*> obstacleList_; // Store the obstacles posision.
+    QList<Point> path_; // To save the planner's path result.
     Ellipse *starPoint_ = NULL;
     Ellipse *goalPoint_ = NULL;
+    Ellipse *person_ = NULL; // For current demo version, we only have 1 person.
 };
 
 #endif // PAINTWIDGET_H
