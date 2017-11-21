@@ -28,22 +28,22 @@ QPoint Shape::getBPoint() const
     return this->bPoint_;
 }
 
-void Shape::setQBrush(const QBrush qBrush)
+void Shape::setQBrushColor(const QColor brushColor)
 {
-    this->qBrush_ = qBrush;
+    this->brushColor_ = brushColor;
 }
 
-QBrush Shape::getQBursh() const
+QBrush Shape::getQBurshColor() const
 {
-    return this->qBrush_;
+    return this->brushColor_;
 }
 
-void Shape::setQPen(const QPen &qPen)
+void Shape::setQPenColor(const QColor penColor)
 {
-    this->qPen_ = qPen;
+    this->penColor_ = penColor;
 }
 
-QPen Shape::getQPen() const
+QPen Shape::getQPenColor() const
 {
-    return this->qPen_;
+    return this->penColor_;
 }

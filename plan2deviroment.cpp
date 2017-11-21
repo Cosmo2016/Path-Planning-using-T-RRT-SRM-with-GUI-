@@ -121,7 +121,7 @@ QList<Point> Plan2DEviroment::recordSolution()
         if (!ss_ || !ss_->haveSolutionPath())
             throw;
     } catch(...) {
-        cout<<""<<endl;
+        cout << "" << endl;
     }
 
     og::PathGeometric p = ss_->getSolutionPath();
@@ -138,8 +138,8 @@ QList<Point> Plan2DEviroment::recordSolution()
         QPoint qPoint(h, w);
         Point pointOfPath;
         pointOfPath.setAPoint(qPoint);
-        pointOfPath.setQBrush(QBrush(Qt::darkGreen));
-        pointOfPath.setQPen(QPen(Qt::darkGreen));
+        pointOfPath.setQBrushColor(Qt::blue);
+        pointOfPath.setQPenColor(Qt::blue);
         path << pointOfPath;
         // this->qImage_.setPixelColor(qPoint, qColor);
         // emit sentPathPoint(qPoint);

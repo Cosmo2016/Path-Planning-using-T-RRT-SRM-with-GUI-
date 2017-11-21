@@ -61,22 +61,23 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
         {
             this->starPoint_ = new Ellipse;
         }
-        this->starPoint_->setQPen(QPen(Qt::red));
-        this->starPoint_->setQBrush(QBrush(Qt::red));
+        this->starPoint_->setQPenColor(Qt::red);
+        this->starPoint_->setQBrushColor(Qt::red);
         this->starPoint_->setAPoint(event->pos());
+
         break;
     case Shape::DestPoint:
         if (this->goalPoint_ == NULL) {
             this->goalPoint_ = new Ellipse;
         }
-        this->goalPoint_->setQPen(QPen(Qt::blue));
-        this->goalPoint_->setQBrush(QBrush(Qt::blue));
+        this->goalPoint_->setQPenColor(Qt::blue);
+        this->goalPoint_->setQBrushColor(Qt::blue);
         this->goalPoint_->setAPoint(event->pos());
         break;
     case Shape::Rect: // Obstacle
         this->shape_ = new Rect;
-        this->shape_->setQPen(QPen(Qt::black));
-        this->shape_->setQBrush(QBrush(Qt::black));
+        this->shape_->setQPenColor(Qt::black);
+        this->shape_->setQBrushColor(Qt::black);
         this->shape_->setAPoint(event->pos());
         this->shape_->setBPoint(event->pos());
         // Add to list
@@ -86,8 +87,8 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
         if (this->person_ == NULL) {
             this->person_ = new Ellipse;
         }
-        this->person_->setQPen(QPen(Qt::green));
-        this->person_->setQBrush(QBrush(Qt::green));
+        this->person_->setQPenColor(Qt::green);
+        this->person_->setQBrushColor(Qt::green);
         this->person_->setAPoint(event->pos());
         break;
     }

@@ -23,11 +23,11 @@ public:
     void setBPoint(const QPoint);
     QPoint getBPoint() const;
 
-    void setQBrush(const QBrush);
-    QBrush getQBursh() const;
+    void setQBrushColor(const QColor);
+    QBrush getQBurshColor() const;
 
-    void setQPen(const QPen&);
-    QPen getQPen() const;
+    void setQPenColor(const QColor);
+    QPen getQPenColor() const;
 
     void virtual paint(QPaintDevice*) = 0;
 
@@ -35,8 +35,8 @@ protected:
     QPoint aPoint_;
     QPoint bPoint_;
 
-    QBrush qBrush_;
-    QPen qPen_;
+    QColor brushColor_;
+    QColor penColor_;
 };
 
 #endif // SHAPE_H
