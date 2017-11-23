@@ -33,9 +33,6 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
             setStateValidityCheckingResolution(1.0 / space->getMaximumExtent());
     this->ss_->setPlanner(
                 std::make_shared<og::RRTConnect>(this->ss_->getSpaceInformation()));
-
-    connect(this, SIGNAL(sentPathPoint(QPoint)),
-            paintWidget, SLOT(addPathPoint(QPoint)));
 }
 
 
@@ -48,7 +45,7 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
                            <ob::RealVectorStateSpace::StateType>()->values[1], maxHeight_);
 
     // const ompl::PPM::Color &c = ppm_.getPixel(h, w);
-    // cout<<"w="<<w<<" h="<<h<<endl;
+    // cout << "w=" << w << " h=" << h << endl;
     const QColor c = this->qImage_.pixelColor(h, w);
     int *r = new int(-1);
     int *g = new int(-1);
@@ -126,7 +123,7 @@ QList<Point> Plan2DEviroment::recordSolution()
 
     og::PathGeometric p = ss_->getSolutionPath();
     p.interpolate();
-    QList<Point> path;
+    QList<Point> path; // Stor the trajectory
     for (std::size_t i = 0 ; i < p.getStateCount() ; ++i) {
         const int w = std::min(maxWidth_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[0]);
         const int h = std::min(maxHeight_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[1]);
@@ -135,9 +132,8 @@ QList<Point> Plan2DEviroment::recordSolution()
         //c.green = 0;
         //c.blue = 0;
         // QColor qColor(255, 0, 0);
-        QPoint qPoint(h, w);
         Point pointOfPath;
-        pointOfPath.setAPoint(qPoint);
+        pointOfPath.setAPoint(QPoint(h, w));
         pointOfPath.setQBrushColor(Qt::blue);
         pointOfPath.setQPenColor(Qt::blue);
         path << pointOfPath;

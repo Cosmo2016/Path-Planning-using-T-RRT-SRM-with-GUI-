@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *drawDesAction = new QAction("Destination", bar);
     // drawLineAction->setIcon(QIcon(":/line.png"));
     drawDesAction->setToolTip(tr("Draw the destination point"));
-    drawDesAction->setStatusTip(tr("Draw the destination point."));
+    // drawDesAction->setStatusTip(tr("Draw the destination point."));
     drawDesAction->setCheckable(true);
     // drawDesAction->setChecked(true);
     group->addAction(drawDesAction);
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *drawRectAction = new QAction("Obstacle", bar);
     // drawRectAction->setIcon(QIcon(":/rectangel.png"));
     drawRectAction->setToolTip(tr("Draw obstacles"));
-    drawRectAction->setStatusTip(tr("Draw obstacles."));
+    // drawRectAction->setStatusTip(tr("Draw obstacles."));
     drawRectAction->setCheckable(true);
     group->addAction(drawRectAction);
     bar->addAction(drawRectAction);
@@ -45,21 +45,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *drawPersonAction = new QAction("Person", bar);
     // drawRectAction->setIcon(QIcon(":/rectangel.png"));
     drawPersonAction->setToolTip(tr("Draw a person"));
-    drawPersonAction->setStatusTip(tr("Draw a person"));
+    // drawPersonAction->setStatusTip(tr("Draw a person"));
     drawPersonAction->setCheckable(true);
     group->addAction(drawPersonAction);
     bar->addAction(drawPersonAction);
 
     QAction *pathPlanAction = new QAction("Plan start", bar);
     pathPlanAction->setToolTip(tr("Plan start"));
-    pathPlanAction->setStatusTip(tr("Plan start"));
+    // pathPlanAction->setStatusTip(tr("Plan start"));
     pathPlanAction->setCheckable(true);
     group->addAction(pathPlanAction);
     bar->addAction(pathPlanAction);
 
     QAction *saveFileAction = new QAction("Save file", bar);
     saveFileAction->setToolTip(tr("Save file"));
-    saveFileAction->setStatusTip(tr("Save file to disk."));
+    // saveFileAction->setStatusTip(tr("Save file to disk."));
     saveFileAction->setCheckable(true);
     group->addAction(saveFileAction);
     bar->addAction(saveFileAction);
@@ -132,15 +132,18 @@ void call_thread_path_planner(PaintWidget *paintWidget)
     if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
                              goalPoint.y(), goalPoint.x())) {
         QList<Point> pathPoint = plan2DEviroment.recordSolution();
-        // this->paintWidget->addPathPoint(pathPoint);
         paintWidget->addPathPoint(pathPoint);
-    }
+    } /*else {
+        // Should show failed message to UI
+    }*/
+
 }
 
 void MainWindow::pathPlanActionTriggered()
 {
+    this->statusBar()->showMessage("Path searching starting....", 3000);
     std::thread pathPlannerThread(call_thread_path_planner,
-                                  std::ref(this->paintWidget));
+                                  this->paintWidget);
     pathPlannerThread.detach();
 }
 

@@ -7,12 +7,9 @@
 #include <ompl/geometric/planners/rrt/RRTConnect.h>
 #include <ompl/util/PPM.h>
 #include <ompl/config.h>
-#include <QImage>
 
 #include <boost/filesystem.hpp>
-#include <iostream>
 #include "paintwidget.h"
-#include "point.h"
 
 namespace ob = ompl::base;
 namespace og = ompl::geometric;

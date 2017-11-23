@@ -53,7 +53,6 @@ void PaintWidget::paintEvent(QPaintEvent *event)
 void PaintWidget::mousePressEvent(QMouseEvent *event)
 {
     cout << "PaintWidget::mousePressEvent" << endl;
-    QPainter painter(this);
 
     switch (this->currShapeCode_) {
     case Shape::DepartPoint:
@@ -85,7 +84,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
         break;
     case Shape::Person:
         if (this->person_ == NULL) {
-            this->person_ = new Ellipse;
+            this->person_ = new Human;
         }
         this->person_->setQPenColor(Qt::green);
         this->person_->setQBrushColor(Qt::green);
