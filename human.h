@@ -7,14 +7,18 @@
 class Human : public Shape
 {
 public:
-    enum Operation {
-        translation,
-        rotation
+
+    enum Status {
+        Status_None,
+        Status_Move,
+        Status_Fixed,
+        Status_Rotate
     };
 
-    /* enum Status {
-        move,
-    } */
+    enum Event {
+        Event_DownClick,
+        Event_UpClick,
+    };
 
     Human();
     ~Human();

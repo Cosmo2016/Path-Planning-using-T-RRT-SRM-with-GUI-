@@ -1,26 +1,30 @@
 #include "plan2deviroment.h"
+#include "utility.h"
 
 Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
 {
     cout << "Plan2DEviroment::Plan2DEviroment" << endl;
 
-    if (paintWidget == NULL) {
+    if (paintWidget == nullptr) {
         cout << "error: paintWidget is null" << endl;
         return;
+    } else {
+        this->paintWidget = paintWidget;
     }
-    cout << "Start Point = " << paintWidget->getStartPoint().x()
-         << "," << paintWidget->getStartPoint().y() << endl;
-    cout << "Goal Point = "<< paintWidget->getGoalPoint().x()
-         << "," << paintWidget->getGoalPoint().y() << endl;
+    cout << "Start Point = " << this->paintWidget->getStartPoint().x()
+         << "," << this->paintWidget->getStartPoint().y() << endl;
+    cout << "Goal Point = "<< this->paintWidget->getGoalPoint().x()
+         << "," << this->paintWidget->getGoalPoint().y() << endl;
 
-    qImage_ = paintWidget->grab().toImage();
+    qImage_ = this->paintWidget->grab().toImage();
+
     auto space(std::make_shared<ob::RealVectorStateSpace>());
     space->addDimension(0.0, qImage_.height());
     space->addDimension(0.0, qImage_.width());
-    cout << "qImage_.width() = " << qImage_.width() << endl;
+
     cout << "qImage_.height() = "<< qImage_.height() << endl;
-    /*this->maxWidth_ = ppm_.getWidth() - 1;
-    this->maxHeight_ = ppm_.getHeight() - 1;*/
+    cout << "qImage_.width() = " << qImage_.width() << endl;
+
     this->maxWidth_ = qImage_.height() - 1;
     this->maxHeight_ = qImage_.width() - 1;
     this->ss_ = std::make_shared<og::SimpleSetup>(space);
@@ -54,22 +58,78 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
     // cout<<"r="<<*r<<", g="<<*g<<", b="<<*b<<endl;
 
     // return c.red() > 127 && c.green() > 127 && c.blue() > 127;
-    bool ifValid = false;
-    if (*r == 255 || *g == 255 || *b == 255) {
+    bool ifValid = true;
+    if (*r == 0 && *g == 0 && *b == 0) {
         // cout<<"Plan2DEviroment::isStateValid true"<<endl;
-        ifValid = true;
+        ifValid = false;
+    } else if (*r == 0 && *g == 255 && *b == 0) {
+        ifValid = false;
     }
+
+    if (ifValid) {
+        Human *tmpHuman = this->paintWidget->getHuman();
+        if (tmpHuman) {
+            ifValid = this->transactionTest(tmpHuman->getAPoint().y(), tmpHuman->getAPoint().x(),
+                                  120, h, w);
+        }
+    }
+
     delete r;
     delete g;
     delete b;
     return ifValid;
 }
 
-bool Plan2DEviroment::transactionTest()
+bool Plan2DEviroment::transactionTest(float man_x, float man_y, float man_diraction, float search_x, float search_y)
 {
-    // here implement code ----------------!!!!!!!!!!!!!!!!!!!
+    // for debug
+    cout << "Human x = " << man_x << endl;
+    cout << "Human y = " << man_y << endl;
+    cout << "Human dirction = " << man_diraction << endl;
+    cout << "Search x = " << search_x <<  endl;
+    cout << "Search y = " << search_y <<  endl;
 
-    return false;
+    const float STD_DEV_1 = 3.5 * 500;
+    const float STD_DEV_2 = 2 * 500;
+    const float FF = 0.1;
+    const float VN = 3;
+    const float AMP = 1.0;
+    const float MAX_DISTANTS = 25;
+
+    float searcherAngleWithXAxis = Utility::pointAngleWithXAxis(search_x, search_y);
+    float angle = searcherAngleWithXAxis - man_diraction;
+    float distance = Utility::distanceBetween2Points(man_y, man_x, search_x, search_y);
+
+    if (distance > 80) {
+        return true;
+    }
+
+    float betaFront = 0;
+    if (cos(angle) <= 0) {
+        // Back
+        cout << "Back" <<  endl;
+        betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+    } else {
+        // Front
+        cout << "Front" <<  endl;
+        betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
+    }
+
+    float betaSide = pow(distance * sin(angle), 2) / (2 * pow(STD_DEV_2, 2));
+
+    float beta = (betaFront + betaSide);
+    cout << "beta = " << beta << endl;
+
+    float p = pow(M_E, -beta) * AMP;
+    cout << "p = " << p << endl;
+    float radomP = Utility::randomProbability();
+    cout << "radomP = " << radomP <<  endl;
+
+    if (radomP < p) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,

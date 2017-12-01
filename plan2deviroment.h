@@ -11,6 +11,7 @@
 #include <boost/filesystem.hpp>
 #include "paintwidget.h"
 
+
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
@@ -20,7 +21,7 @@ class Plan2DEviroment : public QObject
     Q_OBJECT
 
 public:
-    Plan2DEviroment(PaintWidget * paintWidget) ;
+    Plan2DEviroment(PaintWidget *paintWidget) ;
     bool plan(unsigned int start_row, unsigned int start_col,
               unsigned int goal_row, unsigned int goal_col);
     QList<Point> recordSolution();
@@ -28,12 +29,14 @@ public:
 
 private:
     bool isStateValid(const ob::State *);
-    bool transactionTest(); // Kernel implement here!!!
+    // Kernel implement here!!!
+    bool transactionTest(float man_x, float man_y, float man_diraction, float search_x, float search_y);
     og::SimpleSetupPtr ss_;
     int maxWidth_;
     int maxHeight_;
     QImage qImage_;
-    QPoint personPos_; // Temporary only one person
+
+    PaintWidget *paintWidget = nullptr;
 };
 
 #endif // PLAN2DEVIROMENT_H

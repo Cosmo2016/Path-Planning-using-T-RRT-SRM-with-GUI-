@@ -25,6 +25,11 @@ QImage PaintWidget::getQImage()
     return qPixmap.toImage();
 }
 
+Human* PaintWidget::getHuman()
+{
+    return this->person_;
+}
+
 void PaintWidget::paintEvent(QPaintEvent *event)
 {
     cout << "PaintWidget::paintEvent" << endl;
@@ -48,6 +53,7 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         // painter.drawPoint(pointOfPath);
         pointOfPath.paint(this);
     }
+
 }
 
 void PaintWidget::mousePressEvent(QMouseEvent *event)
@@ -169,8 +175,8 @@ void PaintWidget::save2File()
         // this->qPixmap(this->size());
         // this->render(&this->qPixmap);
         this->render(&qImage);
-        cout << "sava file success" << endl;
+        cout << "Sava file success" << endl;
     } else {
-        cout << "sava file fail" << endl;
+        cout << "Sava file failed" << endl;
     }
 }

@@ -129,6 +129,7 @@ void call_thread_path_planner(PaintWidget *paintWidget)
     Plan2DEviroment plan2DEviroment(paintWidget);
     QPoint startPoint = paintWidget->getStartPoint();
     QPoint goalPoint = paintWidget->getGoalPoint();
+
     if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
                              goalPoint.y(), goalPoint.x())) {
         QList<Point> pathPoint = plan2DEviroment.recordSolution();

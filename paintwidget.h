@@ -21,6 +21,7 @@ public:
     QPoint getStartPoint();
     QPoint getGoalPoint();
     QImage getQImage();
+    Human* getHuman();
 
 public slots:
     void setCurrentShape(const Shape::Code currentShape);
@@ -41,7 +42,7 @@ private:
     QList<Point> path_; // To save the planner's path result.
     Ellipse *starPoint_ = NULL;
     Ellipse *goalPoint_ = NULL;
-    Human *person_ = NULL; // For current demo version, we only have 1 person.
+    Human *person_; // For current demo version, we only have 1 person.
 };
 
 #endif // PAINTWIDGET_H
