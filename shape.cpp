@@ -8,22 +8,22 @@ Shape::~Shape()
 {
 }
 
-void Shape::setAPoint(const QPoint aPoint)
+void Shape::setAPoint(const QPointF aPoint)
 {
     this->aPoint_ = aPoint;
 }
 
-QPoint Shape::getAPoint() const
+QPointF Shape::getAPoint() const
 {
     return this->aPoint_;
 }
 
-void Shape::setBPoint(const QPoint bPoint)
+void Shape::setBPoint(const QPointF bPoint)
 {
     this->bPoint_ = bPoint;
 }
 
-QPoint Shape::getBPoint() const
+QPointF Shape::getBPoint() const
 {
     return this->bPoint_;
 }

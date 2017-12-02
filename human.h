@@ -30,6 +30,9 @@ public:
 
     void paint(QPaintDevice *) override;
 
+    float maxDistants_ = 50.0;
+    float minDistants_ = 25.0;
+
 protected:
     int id = -1;
     double direction_ = -1.0;

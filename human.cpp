@@ -34,28 +34,31 @@ void Human::paint(QPaintDevice *qWidget)
     const int ellipseWidth = 50;
     const int ellipseHeight = 20;
 
-    float cx = aPoint_.x();
-    float cy = aPoint_.y();
-
     painter.save();
-    painter.translate(QPointF(cx, cy));
+
+    painter.translate(QPointF(aPoint_.x(), aPoint_.y()));
     // painter.translate(aPoint_);
     // 反走样
     // painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setBrush(QBrush(this->getQBurshColor()));
     painter.setPen(QPen(this->getQPenColor()));
-    painter.rotate(30);
+    painter.rotate(10);
     // Notice: It has a central point adjustment.
     float ellipse_central_x = -ellipseWidth / 2.0;
     float ellipse_central_y = -ellipseHeight / 2.0;
     painter.drawEllipse(ellipse_central_x, ellipse_central_y,
                         ellipseWidth, ellipseHeight);
+
+    // Direction
     painter.setPen(QPen(Qt::blue));
     painter.drawLine(QPoint(0, 0), QPoint(0, 10));
     painter.restore();
 
     painter.setPen(QPen(Qt::blue));
     painter.drawEllipse(aPoint_, 10, 10);
+    painter.setPen(QPen(Qt::yellow));
+    painter.drawEllipse(aPoint_, maxDistants_, maxDistants_);
+    painter.drawEllipse(aPoint_, minDistants_, minDistants_); //25
 
 }
 

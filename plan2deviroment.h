@@ -26,11 +26,14 @@ public:
               unsigned int goal_row, unsigned int goal_col);
     QList<Point> recordSolution();
     void save(const char *);
+    bool isDebug = true;
 
 private:
     bool isStateValid(const ob::State *);
     // Kernel implement here!!!
-    bool transactionTest(float man_x, float man_y, float man_diraction, float search_x, float search_y);
+    bool transactionTest(float man_x, float man_y,
+                         float man_diraction, float search_x,
+                         float search_y, float minDis, float maxDis);
     og::SimpleSetupPtr ss_;
     int maxWidth_;
     int maxHeight_;

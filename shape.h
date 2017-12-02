@@ -17,11 +17,11 @@ public:
     Shape();
     virtual ~Shape();
 
-    void setAPoint(const QPoint);
-    QPoint getAPoint() const;
+    void setAPoint(const QPointF);
+    QPointF getAPoint() const;
 
-    void setBPoint(const QPoint);
-    QPoint getBPoint() const;
+    void setBPoint(const QPointF);
+    QPointF getBPoint() const;
 
     void setQBrushColor(const QColor);
     QBrush getQBurshColor() const;
@@ -32,8 +32,8 @@ public:
     void virtual paint(QPaintDevice*) = 0;
 
 protected:
-    QPoint aPoint_;
-    QPoint bPoint_;
+    QPointF aPoint_;
+    QPointF bPoint_;
 
     QColor brushColor_;
     QColor penColor_;

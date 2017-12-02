@@ -11,10 +11,13 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
     } else {
         this->paintWidget = paintWidget;
     }
-    cout << "Start Point = " << this->paintWidget->getStartPoint().x()
-         << "," << this->paintWidget->getStartPoint().y() << endl;
-    cout << "Goal Point = "<< this->paintWidget->getGoalPoint().x()
-         << "," << this->paintWidget->getGoalPoint().y() << endl;
+
+    if (this->isDebug) {
+        cout << "Start Point = " << this->paintWidget->getStartPoint().x()
+             << "," << this->paintWidget->getStartPoint().y() << endl;
+        cout << "Goal Point = "<< this->paintWidget->getGoalPoint().x()
+             << "," << this->paintWidget->getGoalPoint().y() << endl;
+    }
 
     qImage_ = this->paintWidget->grab().toImage();
 
@@ -22,8 +25,10 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
     space->addDimension(0.0, qImage_.height());
     space->addDimension(0.0, qImage_.width());
 
-    cout << "qImage_.height() = "<< qImage_.height() << endl;
-    cout << "qImage_.width() = " << qImage_.width() << endl;
+    if (this->isDebug) {
+        cout << "qImage_.height() = "<< qImage_.height() << endl;
+        cout << "qImage_.width() = " << qImage_.width() << endl;
+    }
 
     this->maxWidth_ = qImage_.height() - 1;
     this->maxHeight_ = qImage_.width() - 1;
@@ -59,18 +64,18 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 
     // return c.red() > 127 && c.green() > 127 && c.blue() > 127;
     bool ifValid = true;
-    if (*r == 0 && *g == 0 && *b == 0) {
+    if (*r == 0 && *g == 0 && *b == 0) { // Black
         // cout<<"Plan2DEviroment::isStateValid true"<<endl;
         ifValid = false;
-    } else if (*r == 0 && *g == 255 && *b == 0) {
+    } /*else if (*r == 0 && *g == 255 && *b == 0) {
         ifValid = false;
-    }
+    }*/
 
     if (ifValid) {
         Human *tmpHuman = this->paintWidget->getHuman();
         if (tmpHuman) {
             ifValid = this->transactionTest(tmpHuman->getAPoint().y(), tmpHuman->getAPoint().x(),
-                                  120, h, w);
+                                  120, h, w, tmpHuman->minDistants_, tmpHuman->maxDistants_);
         }
     }
 
@@ -80,53 +85,62 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
     return ifValid;
 }
 
-bool Plan2DEviroment::transactionTest(float man_x, float man_y, float man_diraction, float search_x, float search_y)
+bool Plan2DEviroment::transactionTest(float man_x, float man_y,
+                                      float man_diraction, float search_x,
+                                      float search_y, float minDis, float maxDis)
 {
-    // for debug
-    cout << "Human x = " << man_x << endl;
-    cout << "Human y = " << man_y << endl;
-    cout << "Human dirction = " << man_diraction << endl;
-    cout << "Search x = " << search_x <<  endl;
-    cout << "Search y = " << search_y <<  endl;
+    if (this->isDebug) {
+        cout << "Human x = " << man_x << endl;
+        cout << "Human y = " << man_y << endl;
+        cout << "Human dirction = " << man_diraction << endl;
+        cout << "Search x = " << search_x <<  endl;
+        cout << "Search y = " << search_y <<  endl;
+    }
 
-    const float STD_DEV_1 = 3.5 * 500;
-    const float STD_DEV_2 = 2 * 500;
-    const float FF = 0.1;
+    const float STD_DEV_1 = 70;
+    const float STD_DEV_2 = 40;
+    const float FF = 0.7;
     const float VN = 3;
     const float AMP = 1.0;
-    const float MAX_DISTANTS = 25;
+    // const float MAX_DISTANTS = 50;
 
     float searcherAngleWithXAxis = Utility::pointAngleWithXAxis(search_x, search_y);
     float angle = searcherAngleWithXAxis - man_diraction;
     float distance = Utility::distanceBetween2Points(man_y, man_x, search_x, search_y);
 
-    if (distance > 80) {
+    /*if (distance > MAX_DISTANTS) { // error: 会绕开
         return true;
-    }
+    }*/
 
-    float betaFront = 0;
-    if (cos(angle) <= 0) {
-        // Back
-        cout << "Back" <<  endl;
-        betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
-    } else {
-        // Front
-        cout << "Front" <<  endl;
-        betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
-    }
-
-    float betaSide = pow(distance * sin(angle), 2) / (2 * pow(STD_DEV_2, 2));
-
-    float beta = (betaFront + betaSide);
-    cout << "beta = " << beta << endl;
-
-    float p = pow(M_E, -beta) * AMP;
-    cout << "p = " << p << endl;
-    float radomP = Utility::randomProbability();
-    cout << "radomP = " << radomP <<  endl;
-
-    if (radomP < p) {
+    if (distance < minDis) {
         return false;
+    } else if(distance > minDis && distance < maxDis) {
+        float betaFront = 0;
+        if (cos(angle) <= 0) {
+            // Back
+            cout << "Back" <<  endl;
+            betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+        } else {
+            // Front
+            cout << "Front" <<  endl;
+            betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
+        }
+
+        float betaSide = pow(distance * sin(angle), 2) / (2 * pow(STD_DEV_2, 2));
+
+        float beta = (betaFront + betaSide);
+        cout << "beta = " << beta << endl;
+
+        float p = pow(M_E, -beta) * AMP;
+        cout << "p = " << p << endl;
+        float radomP = Utility::randomProbability();
+        cout << "radomP = " << radomP <<  endl;
+
+        if (radomP < p) {
+            return false;
+        } else {
+            return true;
+        }
     } else {
         return true;
     }
