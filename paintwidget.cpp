@@ -3,6 +3,7 @@
 
 #include "line.h"
 #include "rect.h"
+#include "utility.h"
 
 PaintWidget::PaintWidget(QWidget *parent)
     : QWidget(parent), currShapeCode_(Shape::DepartPoint), shape_(NULL) {
@@ -11,8 +12,8 @@ PaintWidget::PaintWidget(QWidget *parent)
 
 PaintWidget::~PaintWidget()
 {
-    foreach (Shape *shape, this->obstacleList_) {
-        delete shape;
+    foreach (Shape *obstacle, this->obstacleList_) {
+        delete obstacle;
     }
     delete this->starPoint_;
     delete this->goalPoint_;
@@ -44,8 +45,10 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         this->person_->paint(this);
     }
 
-    foreach(Shape *obstacle, this->obstacleList_) {
-        obstacle->paint(this);
+    // Draw human valid area
+    foreach(MyPoint pointOfTest, this->validPointList4Test_) {
+        // painter.drawPoint(pointOfPath);
+        pointOfTest.paint(this);
     }
 
     // Draw path
@@ -54,12 +57,9 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         pointOfPath.paint(this);
     }
 
-    // Draw test
-    foreach(MyPoint pointOfTest, this->validPointList4Test_) {
-        // painter.drawPoint(pointOfPath);
-        pointOfTest.paint(this);
+    foreach(Shape *obstacle, this->obstacleList_) {
+        obstacle->paint(this);
     }
-
 }
 
 void PaintWidget::mousePressEvent(QMouseEvent *event)
@@ -110,6 +110,35 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
 void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 {
     // cout << "PaintWidget::mouseMoveEvent" << endl;
+    // ----------------------------------------------------------------------------------------------------------------------
+
+    // for debug
+    // if (this->person_) {
+    if (false) {
+        int tmp_x = event->pos().x();
+        int tmp_y = event->pos().y();
+        //cout << "(" << tmp_x << "," << tmp_y << ")";
+        float searcherAngleWithXAxis = Utility::pointAngleXxxxxxxx(
+                    person_->getAPoint().x(),
+                    person_->getAPoint().y(),
+                    tmp_x, tmp_y);
+        /*float distance = Utility::distanceBetween2Points(person_->getAPoint().x(),
+                                                         person_->getAPoint().y(),
+                                                         tmp_x, tmp_y);*/
+        cout << " Angle With X-Axis = " << searcherAngleWithXAxis << endl;
+        this->person_->setDirection(120);
+        cout << "Human dir = " << this->person_->getDirection() << endl;
+        // cout << " Two points distances = " << distance << endl;
+
+        float includedAngle = searcherAngleWithXAxis - this->person_->getDirection();
+        cout << "Included angle = " << includedAngle << endl;
+
+        if (cos(includedAngle / 180 * M_PI) <= 0) {
+            cout << "Back" <<  endl;
+        } else {
+            cout << "Front" <<  endl;
+        }
+    }
 
     switch (this->currShapeCode_) {
     case Shape::DepartPoint:

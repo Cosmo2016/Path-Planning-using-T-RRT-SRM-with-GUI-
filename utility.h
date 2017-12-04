@@ -10,6 +10,8 @@ public:
 
     static float pointAngleWithXAxis(float x, float y);
 
+    static float pointAngleXxxxxxxx(float x1, float y1, float x2, float y2);
+
     static float randomProbability();
 
     static int randomRangeNumber(int start, int end);

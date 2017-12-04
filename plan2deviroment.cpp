@@ -75,7 +75,7 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
         Human *tmpHuman = this->paintWidget->getHuman();
         if (tmpHuman) {
             ifValid = this->transactionTest(tmpHuman->getAPoint().y(), tmpHuman->getAPoint().x(),
-                                  120, h, w, tmpHuman->minDistants_, tmpHuman->maxDistants_);
+                                  tmpHuman->getDirection(), h, w, tmpHuman->minDistants_, tmpHuman->maxDistants_);
         }
     }
 
@@ -99,44 +99,42 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
         cout << "Search y = " << search_y <<  endl;
     }
 
-    const float STD_DEV_1 = 3.5;
-    const float STD_DEV_2 = 2;
-    const float FF = 0.7;
-    const float VN = 3;
-    const float AMP = 1.0;
-    // const float MAX_DISTANTS = 50;
+    // const float STD_DEV_1 = 35;
+    // const float STD_DEV_2 = 20;
+    const float STD_DEV_1 = 35;
+    const float STD_DEV_2 = 30;
+    const float FF = 0.3;
+    const float VN = 6;
+    const float AMP = 0.5;
 
-    float searcherAngleWithXAxis = Utility::pointAngleWithXAxis(search_x, search_y);
-    float angle = searcherAngleWithXAxis - man_diraction;
-    float distance = Utility::distanceBetween2Points(man_y, man_x, search_x, search_y);
-
-    /*if (distance > MAX_DISTANTS) { // error: 会绕开
-        return true;
-    }*/
+    // float searcherAngleWithXAxis = Utility::pointAngleWithXAxis(search_x, search_y);
+    float searcherAngleWithXAxis = Utility::pointAngleXxxxxxxx(man_x, man_y, search_x, search_y);
+    float includedAngle = searcherAngleWithXAxis - man_diraction;
+    float distance = Utility::distanceBetween2Points(man_x, man_y, search_x, search_y);
 
     if (distance < minDis) {
         return false;
     } else if(distance > minDis && distance < maxDis) {
-
         // cout << "--------In the middle of min-max---------" << endl;
-
         float betaFront = 0;
-        if (cos(angle) <= 0) {
-            // Back
+        if (cos(includedAngle / 180 * M_PI) <= 0) {
             // cout << "Back" <<  endl;
-            betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+            betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+            // betaFront = distance * pow(cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+
         } else {
-            // Front
             // cout << "Front" <<  endl;
-            betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
+            betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1, 2));
+            // betaFront = distance * pow(cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
         }
 
-        float betaSide = pow(distance * sin(angle), 2) / (2 * pow(STD_DEV_2, 2));
+        float betaSide = pow(distance * sin(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_2, 2));
+        // float betaSide = distance * pow(sin(angle), 2) / (2 * pow(STD_DEV_2, 2));
 
         float beta = (betaFront + betaSide);
         // cout << "beta = " << beta << endl;
 
-        float p = pow(M_E, -beta) * AMP;
+        float p = pow(M_E, -beta * AMP) ;
 
         // cout << "p = " << p << endl;
 
@@ -245,9 +243,11 @@ QPointF* Plan2DEviroment::testHumanValidArea()
     bool ifValid = true;
 
     Human *tmpHuman = this->paintWidget->getHuman();
-    float randomW = -1;
-    float randomH = -1;
-    const float radius = 100.0;
+    tmpHuman->setDirection(30);
+
+    float randomX = -1;
+    float randomY = -1;
+    const float radius = 150.0;
 
     if (tmpHuman) {
         Human *tmpHuman = this->paintWidget->getHuman();
@@ -257,8 +257,8 @@ QPointF* Plan2DEviroment::testHumanValidArea()
             xMin = 0;
         }
         float xMax = tmpHuman->getAPoint().x() + radius;
-        if (xMax >= maxWidth_) {
-            xMax = maxWidth_ - 1;
+        if (xMax >= maxHeight_) {
+            xMax = maxHeight_ - 1;
         }
 
         float yMin = tmpHuman->getAPoint().y() - radius;
@@ -267,26 +267,26 @@ QPointF* Plan2DEviroment::testHumanValidArea()
         }
         float yMax = tmpHuman->getAPoint().y() + radius;
         if (yMax >= maxWidth_) {
-            yMax = maxHeight_ - 1;
+            yMax = maxWidth_ - 1;
         }
 
 
         // int randomW = Utility::randomRangeNumber(0, maxWidth_ - 1);
         // int randomH = Utility::randomRangeNumber(0, maxHeight_ - 1);
-        randomW = Utility::randomRangeNumber(xMin, xMax);
-        randomH = Utility::randomRangeNumber(yMin, yMax);
+        randomX = Utility::randomRangeNumber(xMin, xMax);
+        randomY = Utility::randomRangeNumber(yMin, yMax);
 
         if (tmpHuman) {
-            ifValid = this->transactionTest(tmpHuman->getAPoint().y(), tmpHuman->getAPoint().x(),
-                                  120, randomH, randomW, tmpHuman->minDistants_, tmpHuman->maxDistants_);
+            ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
+                                  tmpHuman->getDirection(), randomX, randomY, tmpHuman->minDistants_, tmpHuman->maxDistants_);
         }
 
     }
 
     if (ifValid == true) {
-        return new QPointF(randomW, randomH);
+        return new QPointF(randomX, randomY);
     } else {
-        cout << "give up" << endl;
+        // cout << "give up" << endl;
         return nullptr;
     }
 }

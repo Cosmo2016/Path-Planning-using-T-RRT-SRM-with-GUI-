@@ -1,10 +1,14 @@
 #include "human.h"
 #include <random>
 #include <cmath>
+#include <utility.h>
 
 Human::Human()
 {
-    this->id = generateHumanId();
+    this->id = Utility::randomRangeNumber(
+                0, pow(2, sizeof(int) * 8 - 1) - 1);
+    this->setDirection(0);
+    this->velocity_ = 0;
 }
 
 Human::~Human()
@@ -12,14 +16,18 @@ Human::~Human()
 
 }
 
-void Human::setDirection(double angle)
+void Human::setDirection(float angle)
 {
-    this->direction_ = angle;
+    if (angle >= 0 && angle <= 360) {
+        this->direction_ = angle - 90;
+    } else {
+        // throw exception
+    }
 }
 
 double Human::getDirection() const
 {
-    return this->direction_;
+    return this->direction_ + 90;
 }
 
 int Human::getHumanId() const
@@ -42,7 +50,9 @@ void Human::paint(QPaintDevice *qWidget)
     // painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setBrush(QBrush(this->getQBurshColor()));
     painter.setPen(QPen(this->getQPenColor()));
-    painter.rotate(10);
+
+    painter.rotate(this->direction_);
+
     // Notice: It has a central point adjustment.
     float ellipse_central_x = -ellipseWidth / 2.0;
     float ellipse_central_y = -ellipseHeight / 2.0;
@@ -52,6 +62,7 @@ void Human::paint(QPaintDevice *qWidget)
     // Direction
     painter.setPen(QPen(Qt::blue));
     painter.drawLine(QPoint(0, 0), QPoint(0, 10));
+
     painter.restore();
 
     painter.setPen(QPen(Qt::blue));
@@ -63,12 +74,4 @@ void Human::paint(QPaintDevice *qWidget)
         painter.drawEllipse(aPoint_, minDistants_, minDistants_);
     }
 
-}
-
-int Human::generateHumanId() const
-{
-    // Set seed，every time seed is different
-    std::default_random_engine engine(time(nullptr));
-    std::uniform_int_distribution<> dis(0, pow(2, sizeof(int) * 8 - 1) - 1);
-    return dis(engine);
 }

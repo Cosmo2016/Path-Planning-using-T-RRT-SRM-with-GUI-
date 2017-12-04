@@ -23,7 +23,7 @@ public:
     Human();
     ~Human();
 
-    void setDirection(double);
+    void setDirection(float);
     double getDirection() const;
 
     int getHumanId() const;
@@ -32,17 +32,15 @@ public:
 
     bool isGuidelineVisiable = true;
 
-    float maxDistants_ = 50.0;
+    float maxDistants_ = 80.0;
     float minDistants_ = 25.0;
 
     bool ifDebug = false;
 
 protected:
-    int id = -1;
-    double direction_ = -1.0;
-    double velocity_ = -1.0;
-
-    int generateHumanId() const;
+    int id;
+    float direction_;
+    float velocity_;
 };
 
 #endif // HUMAN_H

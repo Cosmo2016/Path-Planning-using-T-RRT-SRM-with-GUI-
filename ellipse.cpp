@@ -12,4 +12,3 @@ void Ellipse::paint(QPaintDevice *qWidget)
     painter.setPen(QPen(this->getQPenColor()));
     painter.drawEllipse(aPoint_, 5, 5);
 }
-

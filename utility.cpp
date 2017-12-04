@@ -16,6 +16,25 @@ float Utility::pointAngleWithXAxis(float x, float y)
     return (180 * cv) / M_PI;
 }
 
+float Utility::pointAngleXxxxxxxx(float x1, float y1, float x2, float y2)
+{
+    float cv = atan( (y2 - y1) / (x2 - x1));
+    float angle = (180 * cv) / M_PI;
+    if (x1 > x1 && y2 > y1) {
+        angle;
+    }
+    if (x2 < x1 && y2 > y1) {
+        angle = 180 + angle;
+    }
+    if (x2 < x1 && y2 < y1) {
+        angle = 180 + angle;
+    }
+    if (x2 > x1 && y2 < y1) {
+        angle = 360 + angle;
+    }
+    return angle;
+}
+
 float Utility::randomProbability()
 {
     /*std::random_device rd;
@@ -34,4 +53,3 @@ int Utility::randomRangeNumber(int start, int end)
     auto dice = std::bind(dis, engine);
     return dice();
 }
-

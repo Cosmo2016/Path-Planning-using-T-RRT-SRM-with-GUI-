@@ -169,7 +169,7 @@ void MainWindow::drawTestActionTriggered()
 
     QList<QPointF*> tmpValidateList;
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 400000; ++i) {
         QPointF *tmpTestOkPoint = plan2DEviroment.testHumanValidArea();
         if(tmpTestOkPoint) {
             tmpValidateList << tmpTestOkPoint;
@@ -191,7 +191,7 @@ void MainWindow::drawTestActionTriggered()
         size_t tmp_x = tmp->x();
         size_t tmp_y = tmp->y();
         if (matrix[tmp_x][tmp_y] <= 255) {
-            matrix[tmp_x][tmp_y] += 2;
+            matrix[tmp_x][tmp_y] += 10;
         }
     }
 
@@ -206,13 +206,14 @@ void MainWindow::drawTestActionTriggered()
             if(matrix[i][j] != 0) {
                 MyPoint tmpValidatedPoint;
                 tmpValidatedPoint.setAPoint(QPoint(i, j));
-                tmpValidatedPoint.setQBrushColor(QColor(matrix[i][j], 0, 0));
-                tmpValidatedPoint.setQPenColor(QColor(matrix[i][j], 0, 0));
+                tmpValidatedPoint.setQPenColor(QColor(255, 0, 0, matrix[i][j]));
+                // tmpValidatedPoint.setQPenColor(QColor(0, 1, 0));
                 lastConveretedValidatedPoint << tmpValidatedPoint;
             }
         }
     }
 
+    paintWidget->clearValidPointList4Test();
     paintWidget->addValidPointList4Test(lastConveretedValidatedPoint);
-
+    paintWidget->repaint();
 }
