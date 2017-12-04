@@ -38,6 +38,7 @@ private slots:
     void drawPersonActionTriggered();
     void pathPlanActionTriggered();
     void saveFileActionTriggered();
+    void drawTestActionTriggered();
 };
 
 #endif // MAINWINDOW_H

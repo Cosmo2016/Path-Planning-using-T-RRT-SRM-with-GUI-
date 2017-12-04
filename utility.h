@@ -11,6 +11,8 @@ public:
     static float pointAngleWithXAxis(float x, float y);
 
     static float randomProbability();
+
+    static int randomRangeNumber(int start, int end);
 };
 
 #endif // UTILITY_H

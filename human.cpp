@@ -56,9 +56,12 @@ void Human::paint(QPaintDevice *qWidget)
 
     painter.setPen(QPen(Qt::blue));
     painter.drawEllipse(aPoint_, 10, 10);
-    painter.setPen(QPen(Qt::yellow));
-    painter.drawEllipse(aPoint_, maxDistants_, maxDistants_);
-    painter.drawEllipse(aPoint_, minDistants_, minDistants_); //25
+
+    if(isGuidelineVisiable) {
+        painter.setPen(QPen(Qt::yellow));
+        painter.drawEllipse(aPoint_, maxDistants_, maxDistants_);
+        painter.drawEllipse(aPoint_, minDistants_, minDistants_);
+    }
 
 }
 

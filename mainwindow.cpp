@@ -42,13 +42,21 @@ MainWindow::MainWindow(QWidget *parent) :
     group->addAction(drawRectAction);
     bar->addAction(drawRectAction);
 
-    QAction *drawPersonAction = new QAction("Person", bar);
+    QAction *drawPersonAction = new QAction("Human", bar);
     // drawRectAction->setIcon(QIcon(":/rectangel.png"));
     drawPersonAction->setToolTip(tr("Draw a person"));
     // drawPersonAction->setStatusTip(tr("Draw a person"));
     drawPersonAction->setCheckable(true);
     group->addAction(drawPersonAction);
     bar->addAction(drawPersonAction);
+
+    QAction *drawTestAction = new QAction("Test Human", bar);
+    // drawRectAction->setIcon(QIcon(":/rectangel.png"));
+    drawTestAction->setToolTip(tr("Test valid area "));
+    // drawPersonAction->setStatusTip(tr("Draw a person"));
+    drawTestAction->setCheckable(true);
+    group->addAction(drawTestAction);
+    bar->addAction(drawTestAction);
 
     QAction *pathPlanAction = new QAction("Plan start", bar);
     pathPlanAction->setToolTip(tr("Plan start"));
@@ -82,6 +90,8 @@ MainWindow::MainWindow(QWidget *parent) :
                     this, SLOT(pathPlanActionTriggered()));
     connect(saveFileAction, SIGNAL(triggered()),
                     this, SLOT(saveFileActionTriggered()));
+    connect(drawTestAction, SIGNAL(triggered()),
+                    this, SLOT(drawTestActionTriggered()));
     // Draw a person
     connect(drawPersonAction, SIGNAL(triggered()),
                     this, SLOT(drawPersonActionTriggered()));
@@ -132,7 +142,7 @@ void call_thread_path_planner(PaintWidget *paintWidget)
 
     if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
                              goalPoint.y(), goalPoint.x())) {
-        QList<Point> pathPoint = plan2DEviroment.recordSolution();
+        QList<MyPoint> pathPoint = plan2DEviroment.recordSolution();
         paintWidget->addPathPoint(pathPoint);
     } /*else {
         // Should show failed message to UI
@@ -151,4 +161,58 @@ void MainWindow::pathPlanActionTriggered()
 void MainWindow::saveFileActionTriggered()
 {
     emit saveFileToDisk();
+}
+
+void MainWindow::drawTestActionTriggered()
+{
+    Plan2DEviroment plan2DEviroment(paintWidget);
+
+    QList<QPointF*> tmpValidateList;
+
+    for (int i = 0; i < 1000; ++i) {
+        QPointF *tmpTestOkPoint = plan2DEviroment.testHumanValidArea();
+        if(tmpTestOkPoint) {
+            tmpValidateList << tmpTestOkPoint;
+        }
+    }
+
+    // paintWidget->addValidPointList4Test(tmpValidateList);
+
+    size_t matrix[paintWidget->width()][paintWidget->height()];
+
+    for (int i = 0; i < paintWidget->width(); ++i) {
+        for (int j = 0; j < paintWidget->height(); ++j) {
+            matrix[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < tmpValidateList.size(); ++i) {
+        QPointF* tmp = tmpValidateList.at(i);
+        size_t tmp_x = tmp->x();
+        size_t tmp_y = tmp->y();
+        if (matrix[tmp_x][tmp_y] <= 255) {
+            matrix[tmp_x][tmp_y] += 2;
+        }
+    }
+
+    for (int i = 0; i < tmpValidateList.size(); ++i) {
+        delete tmpValidateList[i];
+    }
+
+    QList<MyPoint> lastConveretedValidatedPoint;
+
+    for (int i = 0; i < paintWidget->width(); ++i) {
+        for (int j = 0; j < paintWidget->height(); ++j) {
+            if(matrix[i][j] != 0) {
+                MyPoint tmpValidatedPoint;
+                tmpValidatedPoint.setAPoint(QPoint(i, j));
+                tmpValidatedPoint.setQBrushColor(QColor(matrix[i][j], 0, 0));
+                tmpValidatedPoint.setQPenColor(QColor(matrix[i][j], 0, 0));
+                lastConveretedValidatedPoint << tmpValidatedPoint;
+            }
+        }
+    }
+
+    paintWidget->addValidPointList4Test(lastConveretedValidatedPoint);
+
 }

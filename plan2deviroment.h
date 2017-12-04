@@ -24,16 +24,22 @@ public:
     Plan2DEviroment(PaintWidget *paintWidget) ;
     bool plan(unsigned int start_row, unsigned int start_col,
               unsigned int goal_row, unsigned int goal_col);
-    QList<Point> recordSolution();
+    QList<MyPoint> recordSolution();
     void save(const char *);
-    bool isDebug = true;
+
+    QPointF* testHumanValidArea();
+
+    // For debug switch
+    bool isDebug_ = false;
 
 private:
     bool isStateValid(const ob::State *);
-    // Kernel implement here!!!
+
+    // Kernel algrithem implement here!!!
     bool transactionTest(float man_x, float man_y,
                          float man_diraction, float search_x,
                          float search_y, float minDis, float maxDis);
+
     og::SimpleSetupPtr ss_;
     int maxWidth_;
     int maxHeight_;

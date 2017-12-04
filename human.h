@@ -30,8 +30,12 @@ public:
 
     void paint(QPaintDevice *) override;
 
+    bool isGuidelineVisiable = true;
+
     float maxDistants_ = 50.0;
     float minDistants_ = 25.0;
+
+    bool ifDebug = false;
 
 protected:
     int id = -1;

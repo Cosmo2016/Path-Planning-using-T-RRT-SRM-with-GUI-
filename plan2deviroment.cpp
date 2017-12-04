@@ -3,7 +3,7 @@
 
 Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
 {
-    cout << "Plan2DEviroment::Plan2DEviroment" << endl;
+    cout << "Plan2DEviroment::Plan2DEviroment()" << endl;
 
     if (paintWidget == nullptr) {
         cout << "error: paintWidget is null" << endl;
@@ -12,7 +12,7 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
         this->paintWidget = paintWidget;
     }
 
-    if (this->isDebug) {
+    if (isDebug_) {
         cout << "Start Point = " << this->paintWidget->getStartPoint().x()
              << "," << this->paintWidget->getStartPoint().y() << endl;
         cout << "Goal Point = "<< this->paintWidget->getGoalPoint().x()
@@ -25,7 +25,7 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
     space->addDimension(0.0, qImage_.height());
     space->addDimension(0.0, qImage_.width());
 
-    if (this->isDebug) {
+    if (isDebug_) {
         cout << "qImage_.height() = "<< qImage_.height() << endl;
         cout << "qImage_.width() = " << qImage_.width() << endl;
     }
@@ -47,7 +47,7 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
 
 bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 {
-    cout << "Plan2DEviroment::isStateValid" << endl;
+    // cout << "Plan2DEviroment::isStateValid()" << endl;
     const int w = std::min((int)state->as
                            <ob::RealVectorStateSpace::StateType>()->values[0], maxWidth_);
     const int h = std::min((int)state->as
@@ -89,7 +89,9 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
                                       float man_diraction, float search_x,
                                       float search_y, float minDis, float maxDis)
 {
-    if (this->isDebug) {
+    // cout << "Plan2DEviroment::transactionTest()" << endl;
+
+    if (isDebug_) {
         cout << "Human x = " << man_x << endl;
         cout << "Human y = " << man_y << endl;
         cout << "Human dirction = " << man_diraction << endl;
@@ -97,8 +99,8 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
         cout << "Search y = " << search_y <<  endl;
     }
 
-    const float STD_DEV_1 = 70;
-    const float STD_DEV_2 = 40;
+    const float STD_DEV_1 = 3.5;
+    const float STD_DEV_2 = 2;
     const float FF = 0.7;
     const float VN = 3;
     const float AMP = 1.0;
@@ -115,26 +117,32 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
     if (distance < minDis) {
         return false;
     } else if(distance > minDis && distance < maxDis) {
+
+        // cout << "--------In the middle of min-max---------" << endl;
+
         float betaFront = 0;
         if (cos(angle) <= 0) {
             // Back
-            cout << "Back" <<  endl;
+            // cout << "Back" <<  endl;
             betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
         } else {
             // Front
-            cout << "Front" <<  endl;
+            // cout << "Front" <<  endl;
             betaFront = pow(distance * cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
         }
 
         float betaSide = pow(distance * sin(angle), 2) / (2 * pow(STD_DEV_2, 2));
 
         float beta = (betaFront + betaSide);
-        cout << "beta = " << beta << endl;
+        // cout << "beta = " << beta << endl;
 
         float p = pow(M_E, -beta) * AMP;
-        cout << "p = " << p << endl;
+
+        // cout << "p = " << p << endl;
+
         float radomP = Utility::randomProbability();
-        cout << "radomP = " << radomP <<  endl;
+
+        // cout << "radomP = " << radomP <<  endl;
 
         if (radomP < p) {
             return false;
@@ -149,12 +157,12 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
 bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
                            unsigned int goal_row, unsigned int goal_col)
 {
-    cout << "Plan2DEviroment::plan" << endl;
+    cout << "Plan2DEviroment::plan()" << endl;
     if (!ss_)
         return false;
 
     // Create the termination condition
-    double seconds = 5;
+    double seconds = 15;
     ob::PlannerTerminationCondition ptc = ob::timedPlannerTerminationCondition( seconds, 0.1 );
 
     ob::ScopedState<> start(ss_->getStateSpace());
@@ -165,9 +173,9 @@ bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
     goal[1] = goal_col;
     ss_->setStartAndGoalStates(start, goal);
 
-    // generate a few solutions; all will be added to the goal;
+    // Generate a few solutions; all will be added to the goal;
     for (int i = 0 ; i < 10 ; ++i) {
-        // cout<<"generate a few solutions; all will be added to the goal "<<i<<endl;
+        // cout << "generate a few solutions; all will be added to the goal " << i << endl;
         if (ss_->getPlanner())
             ss_->getPlanner()->clear();
         ss_->solve(ptc);
@@ -185,19 +193,19 @@ bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
     return false;
 }
 
-QList<Point> Plan2DEviroment::recordSolution()
+QList<MyPoint> Plan2DEviroment::recordSolution()
 {
-    cout << "Plan2DEviroment::recordSolution()" << endl;
+    // cout << "Plan2DEviroment::recordSolution()" << endl;
     try {
         if (!ss_ || !ss_->haveSolutionPath())
             throw;
     } catch(...) {
-        cout << "" << endl;
+        cout << "lan2DEviroment::recordSolution() error" << endl;
     }
 
     og::PathGeometric p = ss_->getSolutionPath();
     p.interpolate();
-    QList<Point> path; // Stor the trajectory
+    QList<MyPoint> path; // Store the trajectory
     for (std::size_t i = 0 ; i < p.getStateCount() ; ++i) {
         const int w = std::min(maxWidth_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[0]);
         const int h = std::min(maxHeight_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[1]);
@@ -206,7 +214,7 @@ QList<Point> Plan2DEviroment::recordSolution()
         //c.green = 0;
         //c.blue = 0;
         // QColor qColor(255, 0, 0);
-        Point pointOfPath;
+        MyPoint pointOfPath;
         pointOfPath.setAPoint(QPoint(h, w));
         pointOfPath.setQBrushColor(Qt::blue);
         pointOfPath.setQPenColor(Qt::blue);
@@ -215,13 +223,13 @@ QList<Point> Plan2DEviroment::recordSolution()
         // emit sentPathPoint(qPoint);
 
     }
-    cout << "Plan2DEviroment::recordSolution() end" << endl;
+    // cout << "Plan2DEviroment::recordSolution() end" << endl;
     return path;
 }
 
 void Plan2DEviroment::save(const char *filename)
 {
-    cout << "Plan2DEviroment::save" << endl;
+    cout << "Plan2DEviroment::save()" << endl;
     if (!ss_) {
         std::cout<< "save NULL" << std::endl;
         return;
@@ -230,4 +238,55 @@ void Plan2DEviroment::save(const char *filename)
     // ppm_.saveFile(filename);
     QString x("/Volumes/Cosmo/");
     this->qImage_.save(x.append(filename), "PPM");
+}
+
+QPointF* Plan2DEviroment::testHumanValidArea()
+{
+    bool ifValid = true;
+
+    Human *tmpHuman = this->paintWidget->getHuman();
+    float randomW = -1;
+    float randomH = -1;
+    const float radius = 100.0;
+
+    if (tmpHuman) {
+        Human *tmpHuman = this->paintWidget->getHuman();
+
+        float xMin = tmpHuman->getAPoint().x() - radius;
+        if (xMin < 0) {
+            xMin = 0;
+        }
+        float xMax = tmpHuman->getAPoint().x() + radius;
+        if (xMax >= maxWidth_) {
+            xMax = maxWidth_ - 1;
+        }
+
+        float yMin = tmpHuman->getAPoint().y() - radius;
+        if (yMin < 0) {
+            yMin = 0;
+        }
+        float yMax = tmpHuman->getAPoint().y() + radius;
+        if (yMax >= maxWidth_) {
+            yMax = maxHeight_ - 1;
+        }
+
+
+        // int randomW = Utility::randomRangeNumber(0, maxWidth_ - 1);
+        // int randomH = Utility::randomRangeNumber(0, maxHeight_ - 1);
+        randomW = Utility::randomRangeNumber(xMin, xMax);
+        randomH = Utility::randomRangeNumber(yMin, yMax);
+
+        if (tmpHuman) {
+            ifValid = this->transactionTest(tmpHuman->getAPoint().y(), tmpHuman->getAPoint().x(),
+                                  120, randomH, randomW, tmpHuman->minDistants_, tmpHuman->maxDistants_);
+        }
+
+    }
+
+    if (ifValid == true) {
+        return new QPointF(randomW, randomH);
+    } else {
+        cout << "give up" << endl;
+        return nullptr;
+    }
 }

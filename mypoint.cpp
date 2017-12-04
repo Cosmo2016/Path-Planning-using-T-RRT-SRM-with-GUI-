@@ -1,10 +1,10 @@
-#include "point.h"
+#include "mypoint.h"
 
-Point::Point()
+MyPoint::MyPoint()
 {
 }
 
-void Point::paint(QPaintDevice* qWidget)
+void MyPoint::paint(QPaintDevice* qWidget)
 {
     QPainter painter(qWidget);
     painter.setBrush(QBrush(this->getQBurshColor()));

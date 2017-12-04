@@ -3,10 +3,10 @@
 
 #include "shape.h"
 
-class Point : public Shape
+class MyPoint : public Shape
 {
 public:
-    Point();
+    MyPoint();
     void paint(QPaintDevice* qWidget) override;
 };
 

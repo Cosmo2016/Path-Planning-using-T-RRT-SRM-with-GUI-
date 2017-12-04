@@ -18,10 +18,20 @@ float Utility::pointAngleWithXAxis(float x, float y)
 
 float Utility::randomProbability()
 {
-    std::random_device rd;
+    /*std::random_device rd;
     std::default_random_engine engine(rd());
     std::uniform_int_distribution<> dis(0, 1000);
+    auto dice = std::bind(dis, engine);*/
+
+    return randomRangeNumber(0, 1000) / 1000.0;
+}
+
+int Utility::randomRangeNumber(int start, int end)
+{
+    std::random_device rd;
+    std::default_random_engine engine(rd());
+    std::uniform_int_distribution<> dis(start, end);
     auto dice = std::bind(dis, engine);
-    return dice() / 1000.0;
+    return dice();
 }
 

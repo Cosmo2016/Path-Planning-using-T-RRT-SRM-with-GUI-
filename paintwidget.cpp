@@ -20,7 +20,7 @@ PaintWidget::~PaintWidget()
 
 QImage PaintWidget::getQImage()
 {
-    cout << "getQImage" << endl;
+    // cout << "QImage PaintWidget::getQImage()" << endl;
     QPixmap qPixmap = QWidget::grab();
     return qPixmap.toImage();
 }
@@ -32,11 +32,7 @@ Human* PaintWidget::getHuman()
 
 void PaintWidget::paintEvent(QPaintEvent *event)
 {
-    cout << "PaintWidget::paintEvent" << endl;
-
-    foreach(Shape *obstacle, this->obstacleList_) {
-        obstacle->paint(this);
-    }
+    // cout << "PaintWidget::paintEvent()" << endl;
 
     if (this->starPoint_) {
         this->starPoint_->paint(this);
@@ -48,17 +44,27 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         this->person_->paint(this);
     }
 
+    foreach(Shape *obstacle, this->obstacleList_) {
+        obstacle->paint(this);
+    }
+
     // Draw path
-    foreach(Point pointOfPath, this->path_) {
+    foreach(MyPoint pointOfPath, this->path_) {
         // painter.drawPoint(pointOfPath);
         pointOfPath.paint(this);
+    }
+
+    // Draw test
+    foreach(MyPoint pointOfTest, this->validPointList4Test_) {
+        // painter.drawPoint(pointOfPath);
+        pointOfTest.paint(this);
     }
 
 }
 
 void PaintWidget::mousePressEvent(QMouseEvent *event)
 {
-    cout << "PaintWidget::mousePressEvent" << endl;
+    // cout << "PaintWidget::mousePressEvent" << endl;
 
     switch (this->currShapeCode_) {
     case Shape::DepartPoint:
@@ -103,7 +109,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
 
 void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    cout<<"PaintWidget::mouseMoveEvent"<<endl;
+    // cout << "PaintWidget::mouseMoveEvent" << endl;
 
     switch (this->currShapeCode_) {
     case Shape::DepartPoint:
@@ -127,7 +133,7 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 
 void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    cout << "PaintWidget::mouseReleaseEvent" << endl;
+    // cout << "PaintWidget::mouseReleaseEvent" << endl;
     this->shape_ = NULL;
 }
 
@@ -142,7 +148,7 @@ QPoint PaintWidget::getGoalPoint()
                   this->goalPoint_->getAPoint().y());
 }
 
-void PaintWidget::addPathPoint(QList<Point> &point)
+void PaintWidget::addPathPoint(QList<MyPoint> &point)
 {
     this->path_.clear();
     this->path_.append(point);
@@ -158,7 +164,7 @@ void PaintWidget::setCurrentShape(const Shape::Code currentShape)
 
 void PaintWidget::save2File()
 {
-    cout << "Save file" << endl;
+    // cout << "PaintWidget::save2File()" << endl;
     QPixmap qPixmap;
     qPixmap = QWidget::grab();
     QImage qImage = qPixmap.toImage();
@@ -179,4 +185,14 @@ void PaintWidget::save2File()
     } else {
         cout << "Sava file failed" << endl;
     }
+}
+
+void PaintWidget::addValidPointList4Test(QList<MyPoint> &testValidatedPoint)
+{
+    this->validPointList4Test_.append(testValidatedPoint);
+}
+
+void PaintWidget::clearValidPointList4Test()
+{
+    this->validPointList4Test_.clear();
 }
