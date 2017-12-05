@@ -37,7 +37,7 @@ public:
 
     bool ifDebug = false;
 
-protected:
+private:
     int id;
     float direction_;
     float velocity_;

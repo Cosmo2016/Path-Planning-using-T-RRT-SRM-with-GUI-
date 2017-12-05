@@ -142,8 +142,8 @@ void call_thread_path_planner(PaintWidget *paintWidget)
 
     if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
                              goalPoint.y(), goalPoint.x())) {
-        QList<MyPoint> pathPoint = plan2DEviroment.recordSolution();
-        paintWidget->addPathPoint(pathPoint);
+        QList<MyPoint> pathPointList = plan2DEviroment.recordSolution();
+        paintWidget->add2PathList(pathPointList);
     } /*else {
         // Should show failed message to UI
     }*/
@@ -153,6 +153,7 @@ void call_thread_path_planner(PaintWidget *paintWidget)
 void MainWindow::pathPlanActionTriggered()
 {
     this->statusBar()->showMessage("Path searching starting....", 3000);
+    paintWidget->clearPathList();
     std::thread pathPlannerThread(call_thread_path_planner,
                                   this->paintWidget);
     pathPlannerThread.detach();

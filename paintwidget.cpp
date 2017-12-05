@@ -177,10 +177,16 @@ QPoint PaintWidget::getGoalPoint()
                   this->goalPoint_->getAPoint().y());
 }
 
-void PaintWidget::addPathPoint(QList<MyPoint> &point)
+void PaintWidget::add2PathList(QList<MyPoint> &point)
+{
+
+    this->path_.append(point);
+    this->repaint(); // force to update UI
+}
+
+void PaintWidget::clearPathList()
 {
     this->path_.clear();
-    this->path_.append(point);
     this->repaint(); // force to update UI
 }
 
@@ -224,4 +230,5 @@ void PaintWidget::addValidPointList4Test(QList<MyPoint> &testValidatedPoint)
 void PaintWidget::clearValidPointList4Test()
 {
     this->validPointList4Test_.clear();
+    this->repaint(); // force to update UI
 }

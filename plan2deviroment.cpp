@@ -74,7 +74,7 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
     if (ifValid) {
         Human *tmpHuman = this->paintWidget->getHuman();
         if (tmpHuman) {
-            ifValid = this->transactionTest(tmpHuman->getAPoint().y(), tmpHuman->getAPoint().x(),
+            ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
                                   tmpHuman->getDirection(), h, w, tmpHuman->minDistants_, tmpHuman->maxDistants_);
         }
     }
