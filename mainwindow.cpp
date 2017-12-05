@@ -216,5 +216,6 @@ void MainWindow::drawTestActionTriggered()
 
     paintWidget->clearValidPointList4Test();
     paintWidget->addValidPointList4Test(lastConveretedValidatedPoint);
-    paintWidget->repaint();
+    // paintWidget->repaint();
+    // paintWidget->update();
 }
