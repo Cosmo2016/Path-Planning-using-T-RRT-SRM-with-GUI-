@@ -45,7 +45,7 @@ void Human::paint(QPaintDevice *qWidget)
     painter.save();
 
     painter.translate(QPointF(aPoint_.x(), aPoint_.y()));
-    // painter.translate(aPoint_);
+
     // 反走样
     // painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setBrush(QBrush(this->getQBurshColor()));

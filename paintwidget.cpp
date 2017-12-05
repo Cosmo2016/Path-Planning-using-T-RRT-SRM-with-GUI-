@@ -1,7 +1,6 @@
 #include "paintwidget.h"
 #include <iostream>
 
-#include "line.h"
 #include "rect.h"
 #include "utility.h"
 
@@ -57,6 +56,7 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         pointOfPath.paint(this);
     }
 
+    // Draw obstacles
     foreach(Shape *obstacle, this->obstacleList_) {
         obstacle->paint(this);
     }
@@ -118,7 +118,7 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
         int tmp_x = event->pos().x();
         int tmp_y = event->pos().y();
         //cout << "(" << tmp_x << "," << tmp_y << ")";
-        float searcherAngleWithXAxis = Utility::pointAngleXxxxxxxx(
+        float searcherAngleWithXAxis = Utility::getIncludedAngle(
                     person_->getAPoint().x(),
                     person_->getAPoint().y(),
                     tmp_x, tmp_y);

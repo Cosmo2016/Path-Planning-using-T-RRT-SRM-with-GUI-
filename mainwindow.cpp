@@ -208,7 +208,6 @@ void MainWindow::drawTestActionTriggered()
                 MyPoint tmpValidatedPoint;
                 tmpValidatedPoint.setAPoint(QPoint(i, j));
                 tmpValidatedPoint.setQPenColor(QColor(255, 0, 0, matrix[i][j]));
-                // tmpValidatedPoint.setQPenColor(QColor(0, 1, 0));
                 lastConveretedValidatedPoint << tmpValidatedPoint;
             }
         }
@@ -216,6 +215,4 @@ void MainWindow::drawTestActionTriggered()
 
     paintWidget->clearValidPointList4Test();
     paintWidget->addValidPointList4Test(lastConveretedValidatedPoint);
-    // paintWidget->repaint();
-    // paintWidget->update();
 }

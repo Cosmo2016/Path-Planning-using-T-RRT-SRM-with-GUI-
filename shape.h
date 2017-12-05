@@ -9,7 +9,6 @@ public:
     enum Code {
         DepartPoint,
         DestPoint,
-        // Line,
         Rect,
         Person
     };

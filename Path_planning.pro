@@ -26,7 +26,6 @@ INCLUDEPATH += /usr/local/Cellar/ompl/1.3.0/include
 
 SOURCES += main.cpp\
     mainwindow.cpp \
-    line.cpp \
     rect.cpp \
     shape.cpp \
     paintwidget.cpp \
@@ -37,7 +36,6 @@ SOURCES += main.cpp\
     mypoint.cpp
 
 HEADERS  += mainwindow.h \
-    line.h \
     rect.h \
     shape.h \
     paintwidget.h \

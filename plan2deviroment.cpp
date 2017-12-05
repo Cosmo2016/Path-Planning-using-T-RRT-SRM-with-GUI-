@@ -54,22 +54,18 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
                            <ob::RealVectorStateSpace::StateType>()->values[1], maxHeight_);
 
     // const ompl::PPM::Color &c = ppm_.getPixel(h, w);
-    // cout << "w=" << w << " h=" << h << endl;
     const QColor c = this->qImage_.pixelColor(h, w);
     int *r = new int(-1);
     int *g = new int(-1);
     int *b = new int(-1);
     c.getRgb(r, g, b);
-    // cout<<"r="<<*r<<", g="<<*g<<", b="<<*b<<endl;
 
     // return c.red() > 127 && c.green() > 127 && c.blue() > 127;
     bool ifValid = true;
     if (*r == 0 && *g == 0 && *b == 0) { // Black
         // cout<<"Plan2DEviroment::isStateValid true"<<endl;
         ifValid = false;
-    } /*else if (*r == 0 && *g == 255 && *b == 0) {
-        ifValid = false;
-    }*/
+    }
 
     if (ifValid) {
         Human *tmpHuman = this->paintWidget->getHuman();
@@ -99,8 +95,6 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
         cout << "Search y = " << search_y <<  endl;
     }
 
-    // const float STD_DEV_1 = 35;
-    // const float STD_DEV_2 = 20;
     const float STD_DEV_1 = 35;
     const float STD_DEV_2 = 30;
     const float FF = 0.3;
@@ -108,14 +102,14 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
     const float AMP = 0.5;
 
     // float searcherAngleWithXAxis = Utility::pointAngleWithXAxis(search_x, search_y);
-    float searcherAngleWithXAxis = Utility::pointAngleXxxxxxxx(man_x, man_y, search_x, search_y);
+    float searcherAngleWithXAxis = Utility::getIncludedAngle(man_x, man_y, search_x, search_y);
     float includedAngle = searcherAngleWithXAxis - man_diraction;
     float distance = Utility::distanceBetween2Points(man_x, man_y, search_x, search_y);
 
     if (distance < minDis) {
         return false;
     } else if(distance > minDis && distance < maxDis) {
-        // cout << "--------In the middle of min-max---------" << endl;
+        // Between min and max distances
         float betaFront = 0;
         if (cos(includedAngle / 180 * M_PI) <= 0) {
             // cout << "Back" <<  endl;
@@ -129,19 +123,10 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
         }
 
         float betaSide = pow(distance * sin(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_2, 2));
-        // float betaSide = distance * pow(sin(angle), 2) / (2 * pow(STD_DEV_2, 2));
-
         float beta = (betaFront + betaSide);
-        // cout << "beta = " << beta << endl;
 
         float p = pow(M_E, -beta * AMP) ;
-
-        // cout << "p = " << p << endl;
-
         float radomP = Utility::randomProbability();
-
-        // cout << "radomP = " << radomP <<  endl;
-
         if (radomP < p) {
             return false;
         } else {
@@ -156,9 +141,9 @@ bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
                            unsigned int goal_row, unsigned int goal_col)
 {
     cout << "Plan2DEviroment::plan()" << endl;
-    if (!ss_)
+    if (!ss_) {
         return false;
-
+    }
     // Create the termination condition
     double seconds = 15;
     ob::PlannerTerminationCondition ptc = ob::timedPlannerTerminationCondition( seconds, 0.1 );
