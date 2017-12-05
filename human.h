@@ -27,20 +27,20 @@ public:
     double getDirection() const;
 
     int getHumanId() const;
+    float getMaxDistants() const;
+    float getMinDistants() const;
 
     void paint(QPaintDevice *) override;
 
     bool isGuidelineVisiable = true;
-
-    float maxDistants_ = 80.0;
-    float minDistants_ = 25.0;
-
     bool ifDebug = false;
 
 private:
     int id;
     float direction_;
     float velocity_;
+    float minDistants_;
+    float maxDistants_;
 };
 
 #endif // HUMAN_H

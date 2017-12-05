@@ -9,6 +9,8 @@ Human::Human()
                 0, pow(2, sizeof(int) * 8 - 1) - 1);
     this->setDirection(0);
     this->velocity_ = 0;
+    this->minDistants_ = 25.0;
+    this->maxDistants_ = 80.0;
 }
 
 Human::~Human()
@@ -33,6 +35,16 @@ double Human::getDirection() const
 int Human::getHumanId() const
 {
     return this->id;
+}
+
+float Human::getMaxDistants() const
+{
+    return this->maxDistants_;
+}
+
+float Human::getMinDistants() const
+{
+    return this->minDistants_;
 }
 
 void Human::paint(QPaintDevice *qWidget)
@@ -73,5 +85,4 @@ void Human::paint(QPaintDevice *qWidget)
         painter.drawEllipse(aPoint_, maxDistants_, maxDistants_);
         painter.drawEllipse(aPoint_, minDistants_, minDistants_);
     }
-
 }

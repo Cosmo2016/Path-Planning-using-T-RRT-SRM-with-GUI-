@@ -71,7 +71,7 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
         Human *tmpHuman = this->paintWidget->getHuman();
         if (tmpHuman) {
             ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
-                                  tmpHuman->getDirection(), h, w, tmpHuman->minDistants_, tmpHuman->maxDistants_);
+                                  tmpHuman->getDirection(), h, w, tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
         }
     }
 
@@ -263,7 +263,7 @@ QPointF* Plan2DEviroment::testHumanValidArea()
 
         if (tmpHuman) {
             ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
-                                  tmpHuman->getDirection(), randomX, randomY, tmpHuman->minDistants_, tmpHuman->maxDistants_);
+                                  tmpHuman->getDirection(), randomX, randomY, tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
         }
 
     }
