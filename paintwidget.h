@@ -26,13 +26,12 @@ public:
     void add2PathList(QList<MyPoint> &pPoint);
     void clearPathList();
 
-    void save2File();
-
     void addValidPointList4Test(QList<MyPoint>&);
     void clearValidPointList4Test();
 
 public slots:
     void setCurrentShape(const Shape::Code currentShape);
+    void save2File();
 
 protected:
     void paintEvent(QPaintEvent *);
