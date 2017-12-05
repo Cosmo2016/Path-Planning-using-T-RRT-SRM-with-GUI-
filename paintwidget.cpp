@@ -233,6 +233,4 @@ void PaintWidget::addValidPointList4Test(QList<MyPoint> &testValidatedPoint)
 void PaintWidget::clearValidPointList4Test()
 {
     this->validPointList4Test_.clear();
-    this->repaint(); // force to update UI
-    // this->update();
 }

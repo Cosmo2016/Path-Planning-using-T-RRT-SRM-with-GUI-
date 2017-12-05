@@ -2,9 +2,6 @@
 #include "ui_mainwindow.h"
 #include "plan2deviroment.h"
 #include <thread>
-#include <iostream>
-
-using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -213,6 +210,6 @@ void MainWindow::drawTestActionTriggered()
         }
     }
 
-    paintWidget->clearValidPointList4Test();
     paintWidget->addValidPointList4Test(lastConveretedValidatedPoint);
+    paintWidget->repaint();
 }
