@@ -19,19 +19,20 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
              << "," << this->paintWidget->getGoalPoint().y() << endl;
     }
 
-    qImage_ = this->paintWidget->grab().toImage();
+    this->map_ = this->paintWidget->grab().toImage();
 
     auto space(std::make_shared<ob::RealVectorStateSpace>());
-    space->addDimension(0.0, qImage_.height());
-    space->addDimension(0.0, qImage_.width());
+    space->addDimension(0.0, map_.height());
+    space->addDimension(0.0, map_.width());
 
     if (isDebug_) {
-        cout << "qImage_.height() = "<< qImage_.height() << endl;
-        cout << "qImage_.width() = " << qImage_.width() << endl;
+        cout << "map_.height() = "<< map_.height() << endl;
+        cout << "map_.width() = " << map_.width() << endl;
     }
 
-    this->maxWidth_ = qImage_.height() - 1;
-    this->maxHeight_ = qImage_.width() - 1;
+    this->maxWidth_ = map_.height() - 1;
+    this->maxHeight_ = map_.width() - 1;
+
     this->ss_ = std::make_shared<og::SimpleSetup>(space);
 
     // set state validity checking for this space
@@ -44,6 +45,149 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
                 std::make_shared<og::RRTConnect>(this->ss_->getSpaceInformation()));
 }
 
+bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
+                           unsigned int goal_row, unsigned int goal_col)
+{
+    cout << "Plan2DEviroment::plan()" << endl;
+    if (!ss_) {
+        return false;
+    }
+    // Create the termination condition
+    double seconds = 15;
+    ob::PlannerTerminationCondition ptc = ob::timedPlannerTerminationCondition(seconds, 0.1);
+
+    ob::ScopedState<> start(ss_->getStateSpace());
+    // start[0] = start_row;
+    // start[1] = start_col;
+    start[0] = start_col;
+    start[1] = start_row;
+    ob::ScopedState<> goal(ss_->getStateSpace());
+    // goal[0] = goal_row;
+    // goal[1] = goal_col;
+    goal[0] = goal_col;
+    goal[1] = goal_row;
+    ss_->setStartAndGoalStates(start, goal);
+
+    // Generate a few solutions; all will be added to the goal;
+    for (int i = 0 ; i < 10 ; ++i) {
+        // cout << "generate a few solutions; all will be added to the goal " << i << endl;
+        if (ss_->getPlanner())
+            ss_->getPlanner()->clear();
+        ss_->solve(ptc);
+    }
+    const std::size_t ns = ss_->getProblemDefinition()->getSolutionCount();
+    OMPL_INFORM("Found %d solutions", (int)ns);
+    if (ss_->haveSolutionPath()) {
+        ss_->simplifySolution();
+        og::PathGeometric &p = ss_->getSolutionPath();
+        ss_->getPathSimplifier()->simplifyMax(p);
+        ss_->getPathSimplifier()->smoothBSpline(p);
+        return true;
+    }
+
+    return false;
+}
+
+QList<MyPoint> Plan2DEviroment::recordSolution()
+{
+    // cout << "Plan2DEviroment::recordSolution()" << endl;
+    try {
+        if (!ss_ || !ss_->haveSolutionPath())
+            throw;
+    } catch(...) {
+        cout << "No SolutionPath be found" << endl;
+    }
+
+    og::PathGeometric p = ss_->getSolutionPath();
+    p.interpolate();
+    QList<MyPoint> path; // Store the trajectory
+    for (std::size_t i = 0 ; i < p.getStateCount() ; ++i) {
+        const int w = std::min(maxWidth_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[0]);
+        const int h = std::min(maxHeight_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[1]);
+        //ompl::PPM::Color &c = ppm_.getPixel(h, w);
+        //c.red = 255;
+        //c.green = 0;
+        //c.blue = 0;
+        // QColor qColor(255, 0, 0);
+        MyPoint pointOfPath;
+        pointOfPath.setAPoint(QPoint(h, w));
+        pointOfPath.setQBrushColor(Qt::blue);
+        pointOfPath.setQPenColor(Qt::blue);
+        path << pointOfPath;
+        // this->qImage_.setPixelColor(qPoint, qColor);
+        // emit sentPathPoint(qPoint);
+
+    }
+    // cout << "Plan2DEviroment::recordSolution() end" << endl;
+    return path;
+}
+
+void Plan2DEviroment::save(const char *filename)
+{
+    cout << "Plan2DEviroment::save()" << endl;
+    if (!ss_) {
+        std::cout<< "save NULL" << std::endl;
+        return;
+    }
+
+    // ppm_.saveFile(filename);
+    QString x("/Volumes/Cosmo/");
+    this->map_.save(x.append(filename), "PPM");
+}
+
+QPointF* Plan2DEviroment::testHumanValidArea()
+{
+    bool ifValid = true;
+
+    Human *tmpHuman = this->paintWidget->getHuman();
+    tmpHuman->setDirection(30);
+
+    float randomX = -1;
+    float randomY = -1;
+    const float radius = 150.0;
+
+    if (tmpHuman) {
+        Human *tmpHuman = this->paintWidget->getHuman();
+
+        float xMin = tmpHuman->getAPoint().x() - radius;
+        if (xMin < 0) {
+            xMin = 0;
+        }
+        float xMax = tmpHuman->getAPoint().x() + radius;
+        if (xMax >= maxHeight_) {
+            xMax = maxHeight_ - 1;
+        }
+
+        float yMin = tmpHuman->getAPoint().y() - radius;
+        if (yMin < 0) {
+            yMin = 0;
+        }
+        float yMax = tmpHuman->getAPoint().y() + radius;
+        if (yMax >= maxWidth_) {
+            yMax = maxWidth_ - 1;
+        }
+
+
+        // int randomW = Utility::randomRangeNumber(0, maxWidth_ - 1);
+        // int randomH = Utility::randomRangeNumber(0, maxHeight_ - 1);
+        randomX = Utility::randomRangeNumber(xMin, xMax);
+        randomY = Utility::randomRangeNumber(yMin, yMax);
+
+        if (tmpHuman) {
+            ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
+                                  tmpHuman->getDirection(), randomX, randomY,
+                                  tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
+        }
+
+    }
+
+    if (ifValid == true) {
+        return new QPointF(randomX, randomY);
+    } else {
+        // cout << "give up" << endl;
+        return nullptr;
+    }
+}
 
 bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 {
@@ -54,7 +198,7 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
                            <ob::RealVectorStateSpace::StateType>()->values[1], maxHeight_);
 
     // const ompl::PPM::Color &c = ppm_.getPixel(h, w);
-    const QColor c = this->qImage_.pixelColor(h, w);
+    const QColor c = this->map_.pixelColor(h, w);
     int *r = new int(-1);
     int *g = new int(-1);
     int *b = new int(-1);
@@ -133,145 +277,5 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
         }
     } else {
         return true;
-    }
-}
-
-bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
-                           unsigned int goal_row, unsigned int goal_col)
-{
-    cout << "Plan2DEviroment::plan()" << endl;
-    if (!ss_) {
-        return false;
-    }
-    // Create the termination condition
-    double seconds = 15;
-    ob::PlannerTerminationCondition ptc = ob::timedPlannerTerminationCondition( seconds, 0.1 );
-
-    ob::ScopedState<> start(ss_->getStateSpace());
-    start[0] = start_row;
-    start[1] = start_col;
-    ob::ScopedState<> goal(ss_->getStateSpace());
-    goal[0] = goal_row;
-    goal[1] = goal_col;
-    ss_->setStartAndGoalStates(start, goal);
-
-    // Generate a few solutions; all will be added to the goal;
-    for (int i = 0 ; i < 10 ; ++i) {
-        // cout << "generate a few solutions; all will be added to the goal " << i << endl;
-        if (ss_->getPlanner())
-            ss_->getPlanner()->clear();
-        ss_->solve(ptc);
-    }
-    const std::size_t ns = ss_->getProblemDefinition()->getSolutionCount();
-    OMPL_INFORM("Found %d solutions", (int)ns);
-    if (ss_->haveSolutionPath()) {
-        ss_->simplifySolution();
-        og::PathGeometric &p = ss_->getSolutionPath();
-        ss_->getPathSimplifier()->simplifyMax(p);
-        ss_->getPathSimplifier()->smoothBSpline(p);
-        return true;
-    }
-
-    return false;
-}
-
-QList<MyPoint> Plan2DEviroment::recordSolution()
-{
-    // cout << "Plan2DEviroment::recordSolution()" << endl;
-    try {
-        if (!ss_ || !ss_->haveSolutionPath())
-            throw;
-    } catch(...) {
-        cout << "lan2DEviroment::recordSolution() error" << endl;
-    }
-
-    og::PathGeometric p = ss_->getSolutionPath();
-    p.interpolate();
-    QList<MyPoint> path; // Store the trajectory
-    for (std::size_t i = 0 ; i < p.getStateCount() ; ++i) {
-        const int w = std::min(maxWidth_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[0]);
-        const int h = std::min(maxHeight_, (int)p.getState(i)->as<ob::RealVectorStateSpace::StateType>()->values[1]);
-        //ompl::PPM::Color &c = ppm_.getPixel(h, w);
-        //c.red = 255;
-        //c.green = 0;
-        //c.blue = 0;
-        // QColor qColor(255, 0, 0);
-        MyPoint pointOfPath;
-        pointOfPath.setAPoint(QPoint(h, w));
-        pointOfPath.setQBrushColor(Qt::blue);
-        pointOfPath.setQPenColor(Qt::blue);
-        path << pointOfPath;
-        // this->qImage_.setPixelColor(qPoint, qColor);
-        // emit sentPathPoint(qPoint);
-
-    }
-    // cout << "Plan2DEviroment::recordSolution() end" << endl;
-    return path;
-}
-
-void Plan2DEviroment::save(const char *filename)
-{
-    cout << "Plan2DEviroment::save()" << endl;
-    if (!ss_) {
-        std::cout<< "save NULL" << std::endl;
-        return;
-    }
-
-    // ppm_.saveFile(filename);
-    QString x("/Volumes/Cosmo/");
-    this->qImage_.save(x.append(filename), "PPM");
-}
-
-QPointF* Plan2DEviroment::testHumanValidArea()
-{
-    bool ifValid = true;
-
-    Human *tmpHuman = this->paintWidget->getHuman();
-    tmpHuman->setDirection(30);
-
-    float randomX = -1;
-    float randomY = -1;
-    const float radius = 150.0;
-
-    if (tmpHuman) {
-        Human *tmpHuman = this->paintWidget->getHuman();
-
-        float xMin = tmpHuman->getAPoint().x() - radius;
-        if (xMin < 0) {
-            xMin = 0;
-        }
-        float xMax = tmpHuman->getAPoint().x() + radius;
-        if (xMax >= maxHeight_) {
-            xMax = maxHeight_ - 1;
-        }
-
-        float yMin = tmpHuman->getAPoint().y() - radius;
-        if (yMin < 0) {
-            yMin = 0;
-        }
-        float yMax = tmpHuman->getAPoint().y() + radius;
-        if (yMax >= maxWidth_) {
-            yMax = maxWidth_ - 1;
-        }
-
-
-        // int randomW = Utility::randomRangeNumber(0, maxWidth_ - 1);
-        // int randomH = Utility::randomRangeNumber(0, maxHeight_ - 1);
-        randomX = Utility::randomRangeNumber(xMin, xMax);
-        randomY = Utility::randomRangeNumber(yMin, yMax);
-
-        if (tmpHuman) {
-            ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
-                                  tmpHuman->getDirection(), randomX, randomY,
-                                  tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
-        }
-
-    }
-
-    if (ifValid == true) {
-        return new QPointF(randomX, randomY);
-    } else {
-        // cout << "give up" << endl;
-        return nullptr;
     }
 }

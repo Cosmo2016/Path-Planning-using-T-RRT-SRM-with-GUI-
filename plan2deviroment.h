@@ -34,8 +34,6 @@ public:
 
 private:
     bool isStateValid(const ob::State *);
-
-    // Kernel algrithem implement here!!!
     bool transactionTest(float man_x, float man_y,
                          float man_diraction, float search_x,
                          float search_y, float minDis, float maxDis);
@@ -43,7 +41,7 @@ private:
     og::SimpleSetupPtr ss_;
     int maxWidth_;
     int maxHeight_;
-    QImage qImage_;
+    QImage map_;
 
     PaintWidget *paintWidget = nullptr;
 };

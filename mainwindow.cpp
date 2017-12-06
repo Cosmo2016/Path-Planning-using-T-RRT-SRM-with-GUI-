@@ -137,8 +137,8 @@ void call_thread_path_planner(PaintWidget *paintWidget)
     QPoint startPoint = paintWidget->getStartPoint();
     QPoint goalPoint = paintWidget->getGoalPoint();
 
-    if (plan2DEviroment.plan(startPoint.y(), startPoint.x(),
-                             goalPoint.y(), goalPoint.x())) {
+    if (plan2DEviroment.plan(startPoint.x(), startPoint.y(),
+                             goalPoint.x(), goalPoint.y())) {
         QList<MyPoint> pathPointList = plan2DEviroment.recordSolution();
         paintWidget->add2PathList(pathPointList);
     } /*else {
