@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     plan2deviroment.cpp \
     human.cpp \
     utility.cpp \
-    mypoint.cpp
+    mypoint.cpp \
+    srmdeviation.cpp
 
 HEADERS  += mainwindow.h \
     rect.h \
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     plan2deviroment.h \
     human.h \
     utility.h \
-    mypoint.h
+    mypoint.h \
+    srmdeviation.h
 
 LIBS += -stdlib=libc++
 CONFIG += c++11
