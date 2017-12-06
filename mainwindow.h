@@ -25,7 +25,6 @@ public:
 private:
     Ui::MainWindow *ui;
     PaintWidget *paintWidget;
-    // void call_thread_path_planner(PaintWidget*) const;
 
 signals:
     void changeCurrentShape(Shape::Code newShape);

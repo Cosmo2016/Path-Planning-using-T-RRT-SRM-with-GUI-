@@ -14,20 +14,28 @@ PaintWidget::~PaintWidget()
     foreach (Shape *obstacle, this->obstacleList_) {
         delete obstacle;
     }
-    delete this->starPoint_;
-    delete this->goalPoint_;
+
+    if (this->starPoint_) {
+        delete this->starPoint_;
+        this->starPoint_ = nullptr;
+    }
+
+    if (this->goalPoint_) {
+        delete this->goalPoint_;
+        this->goalPoint_ = nullptr;
+    }
 }
 
-QImage PaintWidget::getQImage()
+QImage PaintWidget::getMap()
 {
     // cout << "QImage PaintWidget::getQImage()" << endl;
-    QPixmap qPixmap = QWidget::grab();
-    return qPixmap.toImage();
+    return this->grab().toImage();
+    //return QWidget::grab().toImage();
 }
 
-Human* PaintWidget::getHuman()
+Human* PaintWidget::getHuman() const
 {
-    return this->person_;
+    return this->human_;
 }
 
 void PaintWidget::paintEvent(QPaintEvent *event)
@@ -40,8 +48,8 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     if (this->goalPoint_) {
         this->goalPoint_->paint(this);
     }
-    if (this->person_) {
-        this->person_->paint(this);
+    if (this->human_) {
+        this->human_->paint(this);
     }
 
     // Draw human valid area
@@ -68,7 +76,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
 
     switch (this->currShapeCode_) {
     case Shape::DepartPoint:
-        if (this->starPoint_ == NULL)
+        if (!this->starPoint_)
         {
             this->starPoint_ = new Ellipse;
         }
@@ -78,7 +86,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
 
         break;
     case Shape::DestPoint:
-        if (this->goalPoint_ == NULL) {
+        if (!this->goalPoint_) {
             this->goalPoint_ = new Ellipse;
         }
         this->goalPoint_->setQPenColor(Qt::blue);
@@ -95,12 +103,12 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
         this->obstacleList_ << this->shape_;
         break;
     case Shape::Person:
-        if (this->person_ == NULL) {
-            this->person_ = new Human;
+        if (this->human_ == NULL) {
+            this->human_ = new Human;
         }
-        this->person_->setQPenColor(Qt::green);
-        this->person_->setQBrushColor(Qt::green);
-        this->person_->setAPoint(event->pos());
+        this->human_->setQPenColor(Qt::green);
+        this->human_->setQBrushColor(Qt::green);
+        this->human_->setAPoint(event->pos());
         break;
     }
     // this->repaint();
@@ -119,18 +127,18 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
         int tmp_y = event->pos().y();
         //cout << "(" << tmp_x << "," << tmp_y << ")";
         float searcherAngleWithXAxis = Utility::getIncludedAngle(
-                    person_->getAPoint().x(),
-                    person_->getAPoint().y(),
+                    human_->getAPoint().x(),
+                    human_->getAPoint().y(),
                     tmp_x, tmp_y);
         /*float distance = Utility::distanceBetween2Points(person_->getAPoint().x(),
                                                          person_->getAPoint().y(),
                                                          tmp_x, tmp_y);*/
         cout << " Angle With X-Axis = " << searcherAngleWithXAxis << endl;
-        this->person_->setDirection(120);
-        cout << "Human dir = " << this->person_->getDirection() << endl;
+        this->human_->setDirection(120);
+        cout << "Human dir = " << this->human_->getDirection() << endl;
         // cout << " Two points distances = " << distance << endl;
 
-        float includedAngle = searcherAngleWithXAxis - this->person_->getDirection();
+        float includedAngle = searcherAngleWithXAxis - this->human_->getDirection();
         cout << "Included angle = " << includedAngle << endl;
 
         if (cos(includedAngle / 180 * M_PI) <= 0) {
@@ -148,7 +156,7 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
         this->goalPoint_->setAPoint(event->pos());
         break;
     case Shape::Person:
-        this->person_->setAPoint(event->pos());
+        this->human_->setAPoint(event->pos());
         break;
     default:
         if (this->shape_) {

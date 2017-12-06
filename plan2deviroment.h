@@ -10,6 +10,7 @@
 
 #include <boost/filesystem.hpp>
 #include "paintwidget.h"
+#include "human.h"
 
 
 namespace ob = ompl::base;
@@ -21,7 +22,9 @@ class Plan2DEviroment : public QObject
     Q_OBJECT
 
 public:
-    Plan2DEviroment(PaintWidget *paintWidget) ;
+    Plan2DEviroment(QImage map);
+    ~Plan2DEviroment();
+
     bool plan(unsigned int start_row, unsigned int start_col,
               unsigned int goal_row, unsigned int goal_col);
     QList<MyPoint> recordSolution();
@@ -31,6 +34,9 @@ public:
 
     // For debug switch
     bool isDebug_ = false;
+
+    void setHuman(Human *);
+    Human* getHuman() const;
 
 private:
     bool isStateValid(const ob::State *);
@@ -42,8 +48,7 @@ private:
     int maxWidth_;
     int maxHeight_;
     QImage map_;
-
-    PaintWidget *paintWidget = nullptr;
+    Human *human_ = nullptr;
 };
 
 #endif // PLAN2DEVIROMENT_H

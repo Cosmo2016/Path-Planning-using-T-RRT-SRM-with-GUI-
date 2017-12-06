@@ -1,37 +1,27 @@
 #include "plan2deviroment.h"
 #include "utility.h"
 
-Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
+Plan2DEviroment::Plan2DEviroment(QImage map)
 {
     cout << "Plan2DEviroment::Plan2DEviroment()" << endl;
 
-    if (paintWidget == nullptr) {
+    /*if (paintWidget == nullptr) {
         cout << "error: paintWidget is null" << endl;
         return;
     } else {
         this->paintWidget = paintWidget;
     }
 
-    if (isDebug_) {
-        cout << "Start Point = " << this->paintWidget->getStartPoint().x()
-             << "," << this->paintWidget->getStartPoint().y() << endl;
-        cout << "Goal Point = "<< this->paintWidget->getGoalPoint().x()
-             << "," << this->paintWidget->getGoalPoint().y() << endl;
-    }
+    this->map_ = this->paintWidget->grab().toImage(); */
 
-    this->map_ = this->paintWidget->grab().toImage();
+    this->map_ = map;
 
     auto space(std::make_shared<ob::RealVectorStateSpace>());
-    space->addDimension(0.0, map_.height());
-    space->addDimension(0.0, map_.width());
+    space->addDimension(0.0, this->map_.height());
+    space->addDimension(0.0, this->map_.width());
 
-    if (isDebug_) {
-        cout << "map_.height() = "<< map_.height() << endl;
-        cout << "map_.width() = " << map_.width() << endl;
-    }
-
-    this->maxWidth_ = map_.height() - 1;
-    this->maxHeight_ = map_.width() - 1;
+    this->maxWidth_ = this->map_.height() - 1;
+    this->maxHeight_ = this->map_.width() - 1;
 
     this->ss_ = std::make_shared<og::SimpleSetup>(space);
 
@@ -43,6 +33,14 @@ Plan2DEviroment::Plan2DEviroment(PaintWidget *paintWidget)
             setStateValidityCheckingResolution(1.0 / space->getMaximumExtent());
     this->ss_->setPlanner(
                 std::make_shared<og::RRTConnect>(this->ss_->getSpaceInformation()));
+}
+
+Plan2DEviroment::~Plan2DEviroment()
+{
+    if (this->human_) {
+        delete this->human_;
+        this->human_ = nullptr;
+    }
 }
 
 bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
@@ -57,13 +55,10 @@ bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
     ob::PlannerTerminationCondition ptc = ob::timedPlannerTerminationCondition(seconds, 0.1);
 
     ob::ScopedState<> start(ss_->getStateSpace());
-    // start[0] = start_row;
-    // start[1] = start_col;
     start[0] = start_col;
     start[1] = start_row;
+
     ob::ScopedState<> goal(ss_->getStateSpace());
-    // goal[0] = goal_row;
-    // goal[1] = goal_col;
     goal[0] = goal_col;
     goal[1] = goal_row;
     ss_->setStartAndGoalStates(start, goal);
@@ -75,6 +70,7 @@ bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
             ss_->getPlanner()->clear();
         ss_->solve(ptc);
     }
+
     const std::size_t ns = ss_->getProblemDefinition()->getSolutionCount();
     OMPL_INFORM("Found %d solutions", (int)ns);
     if (ss_->haveSolutionPath()) {
@@ -139,30 +135,30 @@ QPointF* Plan2DEviroment::testHumanValidArea()
 {
     bool ifValid = true;
 
-    Human *tmpHuman = this->paintWidget->getHuman();
-    tmpHuman->setDirection(30);
+    /*Human *tmpHuman = this->paintWidget->getHuman();
+    tmpHuman->setDirection(30);*/
 
     float randomX = -1;
     float randomY = -1;
     const float radius = 150.0;
 
-    if (tmpHuman) {
-        Human *tmpHuman = this->paintWidget->getHuman();
+    if (this->human_) {
+        // Human *human_ = this->paintWidget->getHuman();
 
-        float xMin = tmpHuman->getAPoint().x() - radius;
+        float xMin = this->human_->getAPoint().x() - radius;
         if (xMin < 0) {
             xMin = 0;
         }
-        float xMax = tmpHuman->getAPoint().x() + radius;
+        float xMax = this->human_->getAPoint().x() + radius;
         if (xMax >= maxHeight_) {
             xMax = maxHeight_ - 1;
         }
 
-        float yMin = tmpHuman->getAPoint().y() - radius;
+        float yMin = this->human_->getAPoint().y() - radius;
         if (yMin < 0) {
             yMin = 0;
         }
-        float yMax = tmpHuman->getAPoint().y() + radius;
+        float yMax = this->human_->getAPoint().y() + radius;
         if (yMax >= maxWidth_) {
             yMax = maxWidth_ - 1;
         }
@@ -173,10 +169,10 @@ QPointF* Plan2DEviroment::testHumanValidArea()
         randomX = Utility::randomRangeNumber(xMin, xMax);
         randomY = Utility::randomRangeNumber(yMin, yMax);
 
-        if (tmpHuman) {
-            ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
-                                  tmpHuman->getDirection(), randomX, randomY,
-                                  tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
+        if (this->human_) {
+            ifValid = this->transactionTest(this->human_->getAPoint().x(), this->human_->getAPoint().y(),
+                                  this->human_->getDirection(), randomX, randomY,
+                                  this->human_->getMinDistants(), this->human_->getMaxDistants());
         }
 
     }
@@ -212,10 +208,15 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
     }
 
     if (ifValid) {
-        Human *tmpHuman = this->paintWidget->getHuman();
+        /*Human *tmpHuman = this->paintWidget->getHuman();
         if (tmpHuman) {
             ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
                                   tmpHuman->getDirection(), h, w, tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
+        }*/
+        if (this->human_) {
+            ifValid = this->transactionTest(this->human_->getAPoint().x(), this->human_->getAPoint().y(),
+                                  this->human_->getDirection(), h, w,
+                                  this->human_->getMinDistants(), this->human_->getMaxDistants());
         }
     }
 
@@ -278,4 +279,13 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
     } else {
         return true;
     }
+}
+
+void Plan2DEviroment::setHuman(Human *human)
+{
+    this->human_ = human;
+}
+Human* Plan2DEviroment::getHuman() const
+{
+    return this->human_;
 }

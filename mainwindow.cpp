@@ -133,7 +133,14 @@ void MainWindow::drawPersonActionTriggered()
  */
 void call_thread_path_planner(PaintWidget *paintWidget)
 {
-    Plan2DEviroment plan2DEviroment(paintWidget);
+    if (paintWidget == nullptr) {
+        cout << "error: paintWidget is null" << endl;
+        return;
+    }
+
+    Plan2DEviroment plan2DEviroment(paintWidget->getMap());
+    plan2DEviroment.setHuman(paintWidget->getHuman());
+
     QPoint startPoint = paintWidget->getStartPoint();
     QPoint goalPoint = paintWidget->getGoalPoint();
 
@@ -163,7 +170,13 @@ void MainWindow::saveFileActionTriggered()
 
 void MainWindow::drawTestActionTriggered()
 {
-    Plan2DEviroment plan2DEviroment(paintWidget);
+    if (paintWidget == nullptr) {
+        cout << "error: paintWidget is null" << endl;
+        return;
+    }
+
+    Plan2DEviroment plan2DEviroment(paintWidget->getMap());
+    plan2DEviroment.setHuman(paintWidget->getHuman());
 
     QList<QPointF*> tmpValidateList;
 
