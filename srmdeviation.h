@@ -1,11 +1,11 @@
-#ifndef SRMPARAMETERS_H
-#define SRMPARAMETERS_H
+#ifndef SRMDEVIATION_H
+#define SRMDEVIATION_H
 
-
-class SRMdeviation
+class SRMDeviation
 {
 public:
-    SRMdeviation(float, float, float, float);
+    SRMDeviation();
+    SRMDeviation(float, float, float, float);
 
     void setSigma1(float);
     float getSigma1() const;
@@ -19,6 +19,8 @@ public:
     void setProbabilityRatio(float);
     float getProbabilityRatio() const;
 
+    bool isEmpty();
+
 protected:
     float sigma1_;
     float sigma2_;
@@ -26,4 +28,4 @@ protected:
     float probabilityRatio_;
 };
 
-#endif // SRMPARAMETERS_H
+#endif // SRMDEVIATION_H

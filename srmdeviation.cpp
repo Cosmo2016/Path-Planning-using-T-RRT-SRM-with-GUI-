@@ -1,6 +1,13 @@
 #include "srmdeviation.h"
 
-SRMdeviation::SRMdeviation(float sigma1, float sigma2, float velocityDev, float probabilityRatio)
+SRMDeviation::SRMDeviation()
+{
+    this->sigma1_ = -1;
+    this->sigma2_ = -1;
+    this->velocityDev_ = -1;
+    this->probabilityRatio_ = -1;
+}
+SRMDeviation::SRMDeviation(float sigma1, float sigma2, float velocityDev, float probabilityRatio)
 {
     this->sigma1_ = sigma1;
     this->sigma2_ = sigma2;
@@ -9,41 +16,52 @@ SRMdeviation::SRMdeviation(float sigma1, float sigma2, float velocityDev, float 
 }
 
 
-void SRMdeviation::setSigma1(float sigma1)
+void SRMDeviation::setSigma1(float sigma1)
 {
     this->sigma1_ = sigma1;
 }
-float SRMdeviation::getSigma1() const
+float SRMDeviation::getSigma1() const
 {
     return this->sigma1_;
 }
 
-void SRMdeviation::setSigma2(float sigma2)
+void SRMDeviation::setSigma2(float sigma2)
 {
     this->sigma2_ = sigma2;
 }
 
-float SRMdeviation::getSigma2() const
+float SRMDeviation::getSigma2() const
 {
     return this->sigma2_;
 }
 
-void SRMdeviation::setVelocityDev(float velocityDev)
+void SRMDeviation::setVelocityDev(float velocityDev)
 {
     this->velocityDev_ = velocityDev;
 }
 
-float SRMdeviation::getVelocityDev() const
+float SRMDeviation::getVelocityDev() const
 {
     return this->velocityDev_;
 }
 
-void SRMdeviation::setProbabilityRatio(float probabilityRatio_)
+void SRMDeviation::setProbabilityRatio(float probabilityRatio_)
 {
     this->probabilityRatio_ = probabilityRatio_;
 }
 
-float SRMdeviation::getProbabilityRatio() const
+float SRMDeviation::getProbabilityRatio() const
 {
     return this->probabilityRatio_;
+}
+
+bool SRMDeviation::isEmpty()
+{
+    if (this->sigma1_ == -1 && this->sigma2_ == -1
+            && this->velocityDev_ == -1
+            && this->probabilityRatio_ == -1) {
+        return true;
+    } else {
+        return false;
+    }
 }
