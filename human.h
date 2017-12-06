@@ -85,9 +85,8 @@ private:
     Human::SocialRelationArea socialRelationArea_;
     SRMDeviation srmDeviation_;
 
-
     void updaeFuzzyRules();
-    SRMDeviation getRules();
+    SRMDeviation getFuzzyRule();
 };
 
 #endif // HUMAN_H

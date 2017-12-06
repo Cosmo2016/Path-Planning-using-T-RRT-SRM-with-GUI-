@@ -262,7 +262,8 @@ QPointF* Plan2DEviroment::testHumanValidArea()
 
         if (tmpHuman) {
             ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
-                                  tmpHuman->getDirection(), randomX, randomY, tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
+                                  tmpHuman->getDirection(), randomX, randomY,
+                                  tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
         }
 
     }
