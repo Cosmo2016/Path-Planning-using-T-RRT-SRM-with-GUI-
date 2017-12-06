@@ -115,7 +115,6 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
             // cout << "Back" <<  endl;
             betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
             // betaFront = distance * pow(cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
-
         } else {
             // cout << "Front" <<  endl;
             betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1, 2));
