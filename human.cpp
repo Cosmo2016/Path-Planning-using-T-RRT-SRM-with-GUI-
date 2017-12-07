@@ -7,10 +7,17 @@ Human::Human()
 {
     this->id_ = Utility::randomRangeNumber(
                 0, pow(2, sizeof(int) * 8 - 1) - 1);
-    this->setDirection(0);
-    this->velocity_ = 0;
-    this->minDistants_ = 25.0;
-    this->maxDistants_ = 80.0;
+    // this->setDirection(0);
+    // this->velocity_ = 0;
+    // this->minDistants_ = 25.0;
+    // this->maxDistants_ = 80.0;
+    this->direction_ = -90;
+    this->velocity_ = -1;
+    this->minDistants_ = -1;
+    this->maxDistants_ = -1;
+    this->gender_ = Human::Gender_Unknown;
+    this->relation_ = Human::Relation_Unknown;
+    this->roughDistance_ = Human::RoughDistance_Unknown;
 }
 
 Human::Human(Human::Gender gender, Human::Relation relation, Human::RoughDistance roughDistance)
@@ -40,9 +47,33 @@ double Human::getDirection() const
     return this->direction_ + 90;
 }
 
+void Human::setDirectionByRadian(float radian)
+{
+    this->direction_ = radian / M_PI * 180;
+}
+
+double Human::getsDirectionByRadian() const
+{
+    return this->direction_ / 180 * M_PI;
+}
+
+void Human::setVelocity(float velocity)
+{
+       this->velocity_ = velocity;
+}
+float Human::getVelocity() const
+{
+    return this->velocity_;
+}
+
 int Human::getHumanId() const
 {
     return this->id_;
+}
+
+void Human::setMaxDistants(float maxDistants)
+{
+    this->maxDistants_ = maxDistants;
 }
 
 float Human::getMaxDistants() const
@@ -50,9 +81,19 @@ float Human::getMaxDistants() const
     return this->maxDistants_;
 }
 
+void Human::setMinDistants()
+{
+    return this->minDistants_;
+}
+
 float Human::getMinDistants() const
 {
     return this->minDistants_;
+}
+
+void Human::setGender(Human::Gender gender)
+{
+    this->gender_ = gender;
 }
 
 Human::Gender Human::getGender() const
@@ -80,7 +121,7 @@ Human::RoughDistance Human::getRoughDistance() const
     return this->roughDistance_;
 }
 
-Human::SocialRelationArea Human::getsocialRelationArea()
+Human::SocialRelationArea Human::getSocialRelationArea()
 {
     return this->socialRelationArea_;
 }
@@ -188,7 +229,5 @@ void Human::updaeFuzzyRules()
 
 SRMDeviation Human::getFuzzyRule()
 {
-
     return this->srmDeviation_;
-
 }

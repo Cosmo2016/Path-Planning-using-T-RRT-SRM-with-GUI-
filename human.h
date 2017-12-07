@@ -7,19 +7,6 @@
 class Human : public Shape
 {
 public:
-
-    enum Status {
-        Status_None,
-        Status_Move,
-        Status_Fixed,
-        Status_Rotate
-    };
-
-    enum Event {
-        Event_DownClick,
-        Event_UpClick,
-    };
-
     enum Gender {
         Gender_Unknown,
         Gender_Male,
@@ -52,12 +39,21 @@ public:
 
     void setDirection(float);
     double getDirection() const;
+    void setDirectionByRadian(float);
+    double getsDirectionByRadian() const;
+
+    void setVelocity(float);
+    float getVelocity() const;
 
     int getHumanId() const;
 
+    void setMaxDistants(float);
     float getMaxDistants() const;
+
+    void setMinDistants(float);
     float getMinDistants() const;
 
+    void setGender(Human::Gender);
     Human::Gender getGender() const;
 
     void setRelation(Human::Relation);
@@ -66,7 +62,8 @@ public:
     void setRoughDistance(Human::RoughDistance);
     Human::RoughDistance getRoughDistance() const;
 
-    Human::SocialRelationArea getsocialRelationArea();
+    SRMDeviation getFuzzyRule();
+    void updaeFuzzyRules();
 
     void paint(QPaintDevice *) override;
 
@@ -85,8 +82,7 @@ private:
     Human::SocialRelationArea socialRelationArea_;
     SRMDeviation srmDeviation_;
 
-    void updaeFuzzyRules();
-    SRMDeviation getFuzzyRule();
+    Human::SocialRelationArea getSocialRelationArea();
 };
 
 #endif // HUMAN_H

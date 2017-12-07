@@ -1,5 +1,6 @@
 #include "plan2deviroment.h"
 #include "utility.h"
+#include "srmdeviation.h"
 
 Plan2DEviroment::Plan2DEviroment(QImage map)
 {
@@ -111,7 +112,6 @@ QList<MyPoint> Plan2DEviroment::recordSolution()
         path << pointOfPath;
 
     }
-    // cout << "Plan2DEviroment::recordSolution() end" << endl;
     return path;
 }
 
@@ -214,45 +214,51 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 bool Plan2DEviroment::transactionTest(float searchX, float searchY)
 {
     // cout << "Plan2DEviroment::transactionTest()" << endl;
-    const float STD_DEV_1 = 35;
+    /*const float STD_DEV_1 = 35;
     const float STD_DEV_2 = 30;
     const float FF = 0.3;
     const float VN = 6;
-    const float AMP = 0.5;
+    const float AMP = 0.5;*/
 
     float searcherAngleWithXAxis = Utility::getIncludedAngle(this->human_->getAPoint().x(),
                                                              this->human_->getAPoint().y(),
                                                              searchX, searchY);
-    float includedAngle = searcherAngleWithXAxis - this->human_->getDirection();
+    float includedAngle = searcherAngleWithXAxis - this->human_->getsDirectionByRadian();
     float distance = Utility::distanceBetween2Points(this->human_->getAPoint().x(),
                                                      this->human_->getAPoint().y(),
                                                      searchX, searchY);
-    if (distance < this->human_->getMinDistants()) {
-        return false;
-    } else if(distance > this->human_->getMinDistants() &&
-              distance < this->human_->getMaxDistants()) {
-        // Between min and max distances
-        float betaFront = 0;
-        // if (cos(includedAngle / 180 * M_PI) <= 0) {
-        if (cos(includedAngle) <= 0) {
-            // cout << "Back" <<  endl;
-            betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
-        } else {
-            // cout << "Front" <<  endl;
-            betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1, 2));
-        }
-        float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(STD_DEV_2, 2));
 
-        float beta = (betaFront + betaSide);
-        float p = pow(M_E, -beta * AMP) ;
-        float radomP = Utility::randomProbability();
-        if (radomP < p) {
+    SRMDeviation srmDeviation = this->human_->getFuzzyRule();
+
+    if (!srmDeviation.isEmpty()) {
+        if (distance < this->human_->getMinDistants()) {
             return false;
+        } else if(distance > this->human_->getMinDistants() &&
+                  distance < this->human_->getMaxDistants()) {
+            // Between min and max distances
+            float betaFront = 0;
+            // if (cos(includedAngle / 180 * M_PI) <= 0) {
+            if (cos(includedAngle) <= 0) {
+                // cout << "Back" <<  endl;
+                // betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1() / (1 + srmDeviation.getVelocityDev() * this->human_->getVelocity()), 2));
+            } else {
+                // cout << "Front" <<  endl;
+                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1(), 2));
+            }
+            float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(srmDeviation.getSigma2(), 2));
+
+            float beta = (betaFront + betaSide);
+            float p = pow(M_E, -beta * srmDeviation.getProbabilityRatio()) ;
+            float radomP = Utility::randomProbability();
+            if (radomP < p) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
             return true;
         }
-    } else {
-        return true;
     }
 }
 

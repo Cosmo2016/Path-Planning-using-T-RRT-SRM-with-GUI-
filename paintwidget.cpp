@@ -105,6 +105,13 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
     case Shape::Person:
         if (this->human_ == NULL) {
             this->human_ = new Human;
+            // for debug
+            this->human_->setGender(Human::Gender_Male);
+            this->human_->setRelation(Human::Relation_Stranger);
+            this->human_->setRoughDistance(Human::RoughDistance_Far);
+            this->human_->updaeFuzzyRules();
+            this->human_->setMaxDistants(80);
+            this->human_->setMinDistants(25);
         }
         this->human_->setQPenColor(Qt::green);
         this->human_->setQBrushColor(Qt::green);
