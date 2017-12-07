@@ -37,10 +37,10 @@ Plan2DEviroment::Plan2DEviroment(QImage map)
 
 Plan2DEviroment::~Plan2DEviroment()
 {
-    if (this->human_) {
+    /*if (this->human_) {
         delete this->human_;
         this->human_ = nullptr;
-    }
+    }*/
 }
 
 bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
