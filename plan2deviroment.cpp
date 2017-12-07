@@ -250,20 +250,14 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
         // if (cos(includedAngle / 180 * M_PI) <= 0) {
         if (cos(includedAngle) <= 0) {
             // cout << "Back" <<  endl;
-            // betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
             betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
-            // betaFront = distance * pow(cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
         } else {
             // cout << "Front" <<  endl;
-            // betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1, 2));
             betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1, 2));
-            // betaFront = distance * pow(cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
         }
-
-        // float betaSide = pow(distance * sin(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_2, 2));
         float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(STD_DEV_2, 2));
-        float beta = (betaFront + betaSide);
 
+        float beta = (betaFront + betaSide);
         float p = pow(M_E, -beta * AMP) ;
         float radomP = Utility::randomProbability();
         if (radomP < p) {

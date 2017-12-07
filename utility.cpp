@@ -10,27 +10,16 @@ float Utility::distanceBetween2Points(const float x1, const float y1,
     return sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2));
 }
 
-float Utility::pointAngleWithXAxis(float x, float y)
-{
-    // float cv = atan(y / x);
-    // return (180 * cv) / M_PI;
-    return atan(y / x);
-}
-
 float Utility::getIncludedAngle(float x1, float y1, float x2, float y2)
 {
     float cv = atan( (y2 - y1) / (x2 - x1));
-    // float angle = (180 * cv) / M_PI;
     if (x2 < x1 && y2 > y1) {
-        // angle = 180 + angle;
         cv = M_PI + cv;
     }
     if (x2 < x1 && y2 < y1) {
-        // angle = 180 + angle;
         cv = M_PI + cv;
     }
     if (x2 > x1 && y2 < y1) {
-        // angle = 360 + angle;
         cv = 2 * M_PI + cv;
     }
     return cv;
