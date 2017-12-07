@@ -40,9 +40,10 @@ public:
 
 private:
     bool isStateValid(const ob::State *);
-    bool transactionTest(float man_x, float man_y,
+    /*bool transactionTest(float man_x, float man_y,
                          float man_diraction, float search_x,
-                         float search_y, float minDis, float maxDis);
+                         float search_y, float minDis, float maxDis);*/
+    bool transactionTest(float, float);
 
     og::SimpleSetupPtr ss_;
     int maxWidth_;

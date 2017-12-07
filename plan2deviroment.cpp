@@ -104,14 +104,11 @@ QList<MyPoint> Plan2DEviroment::recordSolution()
         //c.red = 255;
         //c.green = 0;
         //c.blue = 0;
-        // QColor qColor(255, 0, 0);
         MyPoint pointOfPath;
         pointOfPath.setAPoint(QPoint(h, w));
         pointOfPath.setQBrushColor(Qt::blue);
         pointOfPath.setQPenColor(Qt::blue);
         path << pointOfPath;
-        // this->qImage_.setPixelColor(qPoint, qColor);
-        // emit sentPathPoint(qPoint);
 
     }
     // cout << "Plan2DEviroment::recordSolution() end" << endl;
@@ -167,9 +164,7 @@ QPointF* Plan2DEviroment::testHumanValidArea()
         randomY = Utility::randomRangeNumber(yMin, yMax);
 
         if (this->human_) {
-            ifValid = this->transactionTest(this->human_->getAPoint().x(), this->human_->getAPoint().y(),
-                                  this->human_->getDirection(), randomX, randomY,
-                                  this->human_->getMinDistants(), this->human_->getMaxDistants());
+            ifValid = this->transactionTest(randomX, randomY);
         }
 
     }
@@ -206,9 +201,7 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 
     if (ifValid) {
         if (this->human_) {
-            ifValid = this->transactionTest(this->human_->getAPoint().x(), this->human_->getAPoint().y(),
-                                  this->human_->getDirection(), h, w,
-                                  this->human_->getMinDistants(), this->human_->getMaxDistants());
+            ifValid = this->transactionTest(h, w);
         }
     }
 
@@ -218,33 +211,26 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
     return ifValid;
 }
 
-bool Plan2DEviroment::transactionTest(float man_x, float man_y,
-                                      float man_diraction, float search_x,
-                                      float search_y, float minDis, float maxDis)
+bool Plan2DEviroment::transactionTest(float searchX, float searchY)
 {
     // cout << "Plan2DEviroment::transactionTest()" << endl;
-
-    if (isDebug_) {
-        cout << "Human x = " << man_x << endl;
-        cout << "Human y = " << man_y << endl;
-        cout << "Human dirction = " << man_diraction << endl;
-        cout << "Search x = " << search_x <<  endl;
-        cout << "Search y = " << search_y <<  endl;
-    }
-
     const float STD_DEV_1 = 35;
     const float STD_DEV_2 = 30;
     const float FF = 0.3;
     const float VN = 6;
     const float AMP = 0.5;
 
-    float searcherAngleWithXAxis = Utility::getIncludedAngle(man_x, man_y, search_x, search_y);
-    float includedAngle = searcherAngleWithXAxis - man_diraction;
-    float distance = Utility::distanceBetween2Points(man_x, man_y, search_x, search_y);
-
-    if (distance < minDis) {
+    float searcherAngleWithXAxis = Utility::getIncludedAngle(this->human_->getAPoint().x(),
+                                                             this->human_->getAPoint().y(),
+                                                             searchX, searchY);
+    float includedAngle = searcherAngleWithXAxis - this->human_->getDirection();
+    float distance = Utility::distanceBetween2Points(this->human_->getAPoint().x(),
+                                                     this->human_->getAPoint().y(),
+                                                     searchX, searchY);
+    if (distance < this->human_->getMinDistants()) {
         return false;
-    } else if(distance > minDis && distance < maxDis) {
+    } else if(distance > this->human_->getMinDistants() &&
+              distance < this->human_->getMaxDistants()) {
         // Between min and max distances
         float betaFront = 0;
         // if (cos(includedAngle / 180 * M_PI) <= 0) {
