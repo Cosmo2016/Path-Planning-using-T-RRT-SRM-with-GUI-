@@ -163,9 +163,6 @@ QPointF* Plan2DEviroment::testHumanValidArea()
             yMax = maxWidth_ - 1;
         }
 
-
-        // int randomW = Utility::randomRangeNumber(0, maxWidth_ - 1);
-        // int randomH = Utility::randomRangeNumber(0, maxHeight_ - 1);
         randomX = Utility::randomRangeNumber(xMin, xMax);
         randomY = Utility::randomRangeNumber(yMin, yMax);
 
@@ -208,11 +205,6 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
     }
 
     if (ifValid) {
-        /*Human *tmpHuman = this->paintWidget->getHuman();
-        if (tmpHuman) {
-            ifValid = this->transactionTest(tmpHuman->getAPoint().x(), tmpHuman->getAPoint().y(),
-                                  tmpHuman->getDirection(), h, w, tmpHuman->getMinDistants(), tmpHuman->getMaxDistants());
-        }*/
         if (this->human_) {
             ifValid = this->transactionTest(this->human_->getAPoint().x(), this->human_->getAPoint().y(),
                                   this->human_->getDirection(), h, w,
@@ -246,7 +238,6 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
     const float VN = 6;
     const float AMP = 0.5;
 
-    // float searcherAngleWithXAxis = Utility::pointAngleWithXAxis(search_x, search_y);
     float searcherAngleWithXAxis = Utility::getIncludedAngle(man_x, man_y, search_x, search_y);
     float includedAngle = searcherAngleWithXAxis - man_diraction;
     float distance = Utility::distanceBetween2Points(man_x, man_y, search_x, search_y);
@@ -256,17 +247,21 @@ bool Plan2DEviroment::transactionTest(float man_x, float man_y,
     } else if(distance > minDis && distance < maxDis) {
         // Between min and max distances
         float betaFront = 0;
-        if (cos(includedAngle / 180 * M_PI) <= 0) {
+        // if (cos(includedAngle / 180 * M_PI) <= 0) {
+        if (cos(includedAngle) <= 0) {
             // cout << "Back" <<  endl;
-            betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+            // betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
+            betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
             // betaFront = distance * pow(cos(angle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
         } else {
             // cout << "Front" <<  endl;
-            betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1, 2));
+            // betaFront = pow(distance * cos(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_1, 2));
+            betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1, 2));
             // betaFront = distance * pow(cos(angle), 2) / (2 * pow(STD_DEV_1, 2));
         }
 
-        float betaSide = pow(distance * sin(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_2, 2));
+        // float betaSide = pow(distance * sin(includedAngle / 180 * M_PI), 2) / (2 * pow(STD_DEV_2, 2));
+        float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(STD_DEV_2, 2));
         float beta = (betaFront + betaSide);
 
         float p = pow(M_E, -beta * AMP) ;
