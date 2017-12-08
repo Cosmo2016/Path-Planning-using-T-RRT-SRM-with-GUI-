@@ -6,15 +6,6 @@ Plan2DEviroment::Plan2DEviroment(QImage map)
 {
     cout << "Plan2DEviroment::Plan2DEviroment()" << endl;
 
-    /*if (paintWidget == nullptr) {
-        cout << "error: paintWidget is null" << endl;
-        return;
-    } else {
-        this->paintWidget = paintWidget;
-    }
-
-    this->map_ = this->paintWidget->grab().toImage(); */
-
     this->map_ = map;
 
     auto space(std::make_shared<ob::RealVectorStateSpace>());
@@ -38,10 +29,7 @@ Plan2DEviroment::Plan2DEviroment(QImage map)
 
 Plan2DEviroment::~Plan2DEviroment()
 {
-    /*if (this->human_) {
-        delete this->human_;
-        this->human_ = nullptr;
-    }*/
+    // !!!Pls do not delete Humans here
 }
 
 bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
@@ -194,7 +182,7 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 
     // return c.red() > 127 && c.green() > 127 && c.blue() > 127;
     bool ifValid = true;
-    if (*r == 0 && *g == 0 && *b == 0) { // Black
+    if (*r == 0 && *g == 0 && *b == 0) { // Black refer to abstacles
         // cout<<"Plan2DEviroment::isStateValid true"<<endl;
         ifValid = false;
     }
@@ -214,12 +202,6 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 bool Plan2DEviroment::transactionTest(float searchX, float searchY)
 {
     // cout << "Plan2DEviroment::transactionTest()" << endl;
-    /*const float STD_DEV_1 = 35;
-    const float STD_DEV_2 = 30;
-    const float FF = 0.3;
-    const float VN = 6;
-    const float AMP = 0.5;*/
-
     float searcherAngleWithXAxis = Utility::getIncludedAngle(this->human_->getAPoint().x(),
                                                              this->human_->getAPoint().y(),
                                                              searchX, searchY);

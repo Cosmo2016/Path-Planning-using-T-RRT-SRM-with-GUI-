@@ -70,7 +70,7 @@ public:
     bool isGuidelineVisiable = true;
     bool ifDebug = false;
 
-private:
+protected:
     int id_;
     float direction_;
     float velocity_;

@@ -7,10 +7,6 @@ Human::Human()
 {
     this->id_ = Utility::randomRangeNumber(
                 0, pow(2, sizeof(int) * 8 - 1) - 1);
-    // this->setDirection(0);
-    // this->velocity_ = 0;
-    // this->minDistants_ = 25.0;
-    // this->maxDistants_ = 80.0;
     this->direction_ = -90;
     this->velocity_ = -1;
     this->minDistants_ = -1;
@@ -81,9 +77,9 @@ float Human::getMaxDistants() const
     return this->maxDistants_;
 }
 
-void Human::setMinDistants()
+void Human::setMinDistants(float minDistants)
 {
-    return this->minDistants_;
+    this->minDistants_ = minDistants;
 }
 
 float Human::getMinDistants() const
@@ -130,8 +126,7 @@ void Human::paint(QPaintDevice *qWidget)
 {
     QPainter painter(qWidget);
 
-    const int ellipseWidth = 50;
-    const int ellipseHeight = 20;
+    const float ration = 2.5;
 
     painter.save();
 
@@ -145,19 +140,19 @@ void Human::paint(QPaintDevice *qWidget)
     painter.rotate(this->direction_);
 
     // Notice: It has a central point adjustment.
-    float ellipse_central_x = -ellipseWidth / 2.0;
-    float ellipse_central_y = -ellipseHeight / 2.0;
+    float ellipse_central_x = -this->minDistants_;
+    float ellipse_central_y = -this->minDistants_ / ration;
     painter.drawEllipse(ellipse_central_x, ellipse_central_y,
-                        ellipseWidth, ellipseHeight);
+                        this->minDistants_ * 2, this->minDistants_ * 2 / ration);
 
     // Direction
     painter.setPen(QPen(Qt::blue));
-    painter.drawLine(QPoint(0, 0), QPoint(0, 10));
+    painter.drawLine(QPoint(0, 0), QPoint(0, this->minDistants_ / ration));
 
     painter.restore();
 
     painter.setPen(QPen(Qt::blue));
-    painter.drawEllipse(aPoint_, 10, 10);
+    painter.drawEllipse(aPoint_, this->minDistants_ / ration, this->minDistants_ / ration);
 
     if(isGuidelineVisiable) {
         painter.setPen(QPen(Qt::yellow));
@@ -220,9 +215,17 @@ void Human::updaeFuzzyRules()
         this->srmDeviation_.setVelocityDev(0.3);
         this->srmDeviation_.setProbabilityRatio(0.5);
         break;
-
-    // Other condition will be added later
+    case Human::SocialRelationArea_ClosePersonalArea:
+        // Add later
+        break;
+    case Human::SocialRelationArea_PublicArea:
+        // Add later
+        break;
+    case Human::SocialRelationArea_SocialArea:
+        // Add later
+        break;
     default:
+        // Add error later
         break;
     }
 }
