@@ -29,12 +29,12 @@ Human::~Human()
 
 }
 
-void Human::setDirection(float angle)
+void Human::setDirection(float angle) throw (std::invalid_argument)
 {
     if (angle >= 0 && angle <= 360) {
         this->direction_ = angle - 90;
     } else {
-        // throw exception
+        throw std::invalid_argument("Invalid input number, the angle's range is 0 ~ 360");
     }
 }
 
@@ -53,10 +53,15 @@ double Human::getsDirectionByRadian() const
     return this->direction_ / 180 * M_PI;
 }
 
-void Human::setVelocity(float velocity)
+void Human::setVelocity(float velocity) throw (std::invalid_argument)
 {
-       this->velocity_ = velocity;
+    if (velocity >= 0) {
+        this->velocity_ = velocity;
+    } else {
+        throw std::invalid_argument("Invalid input number, the velocity's range should be >= 0");
+    }
 }
+
 float Human::getVelocity() const
 {
     return this->velocity_;
@@ -67,9 +72,13 @@ int Human::getHumanId() const
     return this->id_;
 }
 
-void Human::setMaxDistants(float maxDistants)
+void Human::setMaxDistants(float maxDistants) throw (std::invalid_argument)
 {
-    this->maxDistants_ = maxDistants;
+    if (maxDistants >= 0) {
+        this->maxDistants_ = maxDistants;
+    } else {
+        throw std::invalid_argument("Invalid input number, the maxDistants' range should be >= 0");
+    }
 }
 
 float Human::getMaxDistants() const
@@ -77,9 +86,13 @@ float Human::getMaxDistants() const
     return this->maxDistants_;
 }
 
-void Human::setMinDistants(float minDistants)
+void Human::setMinDistants(float minDistants) throw (std::invalid_argument)
 {
-    this->minDistants_ = minDistants;
+    if (minDistants >= 0) {
+        this->minDistants_ = minDistants;
+    } else {
+        throw std::invalid_argument("Invalid input number, the minDistants' range should be >= 0");
+    }
 }
 
 float Human::getMinDistants() const

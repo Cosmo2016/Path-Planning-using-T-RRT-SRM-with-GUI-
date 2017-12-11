@@ -43,7 +43,7 @@ private:
     /*bool transactionTest(float man_x, float man_y,
                          float man_diraction, float search_x,
                          float search_y, float minDis, float maxDis);*/
-    bool transactionTest(float, float);
+    bool transactionTest(float, float) throw (std::exception);
 
     og::SimpleSetupPtr ss_;
     int maxWidth_;

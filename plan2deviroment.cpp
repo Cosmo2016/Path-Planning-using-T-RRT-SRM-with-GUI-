@@ -199,9 +199,17 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
     return ifValid;
 }
 
-bool Plan2DEviroment::transactionTest(float searchX, float searchY)
+bool Plan2DEviroment::transactionTest(float searchX, float searchY) throw (std::exception)
 {
     // cout << "Plan2DEviroment::transactionTest()" << endl;
+    if (searchX < 0 || searchX >= this->maxHeight_
+            || searchY < 0 || searchY >= this->maxWidth_) {
+        throw std::invalid_argument("Invalid coordinate point");
+    }
+    if (!this->human_) {
+        throw std::runtime_error("No human to be found");
+    }
+
     float searcherAngleWithXAxis = Utility::getIncludedAngle(this->human_->getAPoint().x(),
                                                              this->human_->getAPoint().y(),
                                                              searchX, searchY);

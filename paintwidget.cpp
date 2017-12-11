@@ -106,6 +106,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
         if (this->human_ == NULL) {
             this->human_ = new Human;
             // for debug
+            this->human_->setDirection(30);
             this->human_->setGender(Human::Gender_Male);
             this->human_->setRelation(Human::Relation_Stranger);
             this->human_->setRoughDistance(Human::RoughDistance_Far);

@@ -1,6 +1,7 @@
 #ifndef HUMAN_H
 #define HUMAN_H
 
+#include <exception>
 #include "shape.h"
 #include "srmdeviation.h"
 
@@ -37,20 +38,20 @@ public:
     Human(Human::Gender, Human::Relation, Human::RoughDistance);
     ~Human();
 
-    void setDirection(float);
+    void setDirection(float) throw (std::invalid_argument);
     double getDirection() const;
     void setDirectionByRadian(float);
     double getsDirectionByRadian() const;
 
-    void setVelocity(float);
+    void setVelocity(float) throw (std::invalid_argument);
     float getVelocity() const;
 
     int getHumanId() const;
 
-    void setMaxDistants(float);
+    void setMaxDistants(float) throw (std::invalid_argument);
     float getMaxDistants() const;
 
-    void setMinDistants(float);
+    void setMinDistants(float) throw (std::invalid_argument);
     float getMinDistants() const;
 
     void setGender(Human::Gender);

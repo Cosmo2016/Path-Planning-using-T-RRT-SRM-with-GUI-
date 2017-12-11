@@ -10,7 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle(tr("Path planning using T-RRT SRM"));
 
-    QToolBar *bar = ui->mainToolBar;
+    /*QMenu *hello = ui->menuHello;
+    hello->setTitle("xxxx");*/
+
+    QToolBar *bar = ui->toolBar;
     QActionGroup *group = new QActionGroup(bar);
 
     QAction *drawDepartureAction = new QAction("Departure", bar);
