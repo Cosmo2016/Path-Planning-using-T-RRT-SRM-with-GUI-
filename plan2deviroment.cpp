@@ -202,10 +202,10 @@ bool Plan2DEviroment::isStateValid(const ob::State *state) //const
 bool Plan2DEviroment::transactionTest(float searchX, float searchY) throw (std::exception)
 {
     // cout << "Plan2DEviroment::transactionTest()" << endl;
-    if (searchX < 0 || searchX >= this->maxHeight_
+    /*if (searchX < 0 || searchX >= this->maxHeight_
             || searchY < 0 || searchY >= this->maxWidth_) {
         throw std::invalid_argument("Invalid coordinate point");
-    }
+    }*/
     if (!this->human_) {
         throw std::runtime_error("No human to be found");
     }
@@ -231,12 +231,14 @@ bool Plan2DEviroment::transactionTest(float searchX, float searchY) throw (std::
             if (cos(includedAngle) <= 0) {
                 // cout << "Back" <<  endl;
                 // betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
-                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1() / (1 + srmDeviation.getVelocityDev() * this->human_->getVelocity()), 2));
+                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma2(), 2));
             } else {
                 // cout << "Front" <<  endl;
-                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1(), 2));
+                betaFront = pow(distance * cos(includedAngle), 2) /
+                        (2 * pow(srmDeviation.getSigma1() /
+                        (1 + srmDeviation.getVelocityDev() * this->human_->getVelocity()), 2));
             }
-            float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(srmDeviation.getSigma2(), 2));
+            float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1(), 2));
 
             float beta = (betaFront + betaSide);
             float p = pow(M_E, -beta * srmDeviation.getProbabilityRatio()) ;

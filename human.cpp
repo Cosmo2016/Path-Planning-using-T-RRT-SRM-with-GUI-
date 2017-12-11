@@ -45,12 +45,12 @@ double Human::getDirection() const
 
 void Human::setDirectionByRadian(float radian)
 {
-    this->direction_ = radian / M_PI * 180;
+    this->direction_ = radian / M_PI * 180 - M_PI / 2.0;
 }
 
 double Human::getsDirectionByRadian() const
 {
-    return this->direction_ / 180 * M_PI;
+    return this->direction_ / 180 * M_PI + M_PI / 2.0;
 }
 
 void Human::setVelocity(float velocity) throw (std::invalid_argument)
