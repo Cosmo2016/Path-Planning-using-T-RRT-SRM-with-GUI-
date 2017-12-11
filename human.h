@@ -39,9 +39,15 @@ public:
     ~Human();
 
     void setDirection(float) throw (std::invalid_argument);
-    double getDirection() const;
+    float getDirection() const;
     void setDirectionByRadian(float);
-    double getsDirectionByRadian() const;
+    float getsDirectionByRadian() const;
+
+    void setDirectionOffset(float);
+    float getDirectionOffset() const;
+    void setDirectionOffsetByRadian(float);
+    float getDirectionOffsetByRadian() const;
+
 
     void setVelocity(float) throw (std::invalid_argument);
     float getVelocity() const;
@@ -74,6 +80,7 @@ public:
 protected:
     int id_;
     float direction_;
+    float directionOffset_;
     float velocity_;
     float minDistants_;
     float maxDistants_;

@@ -7,7 +7,7 @@ Human::Human()
 {
     this->id_ = Utility::randomRangeNumber(
                 0, pow(2, sizeof(int) * 8 - 1) - 1);
-    this->direction_ = -90;
+    this->direction_ = -directionOffset_;
     this->velocity_ = -1;
     this->minDistants_ = -1;
     this->maxDistants_ = -1;
@@ -29,28 +29,48 @@ Human::~Human()
 
 }
 
-void Human::setDirection(float angle) throw (std::invalid_argument)
+void Human::setDirection(float direction) throw (std::invalid_argument)
 {
-    if (angle >= 0 && angle <= 360) {
-        this->direction_ = angle - 90;
+    if (direction >= 0 && direction < 360) {
+        this->direction_ = direction - directionOffset_;
     } else {
         throw std::invalid_argument("Invalid input number, the angle's range is 0 ~ 360");
     }
 }
 
-double Human::getDirection() const
+float Human::getDirection() const
 {
-    return this->direction_ + 90;
+    return this->direction_ + directionOffset_;
 }
 
-void Human::setDirectionByRadian(float radian)
+void Human::setDirectionByRadian(float directionRadian)
 {
-    this->direction_ = radian / M_PI * 180 - M_PI / 2.0;
+    this->direction_ = directionRadian / M_PI * 180 - this->getDirectionOffsetByRadian();
 }
 
-double Human::getsDirectionByRadian() const
+float Human::getsDirectionByRadian() const
 {
-    return this->direction_ / 180 * M_PI + M_PI / 2.0;
+    return this->direction_ / 180 * M_PI + this->getDirectionOffsetByRadian();
+}
+
+void Human::setDirectionOffset(float directionOffset)
+{
+    this->directionOffset_ = directionOffset;
+}
+
+float Human::getDirectionOffset() const
+{
+    return this->directionOffset_;
+}
+
+void Human::setDirectionOffsetByRadian(float directionOffsetRadian)
+{
+    this->directionOffset_ = directionOffsetRadian / M_PI * 180;
+}
+
+float Human::getDirectionOffsetByRadian() const
+{
+    return this->directionOffset_ / 180 * M_PI;
 }
 
 void Human::setVelocity(float velocity) throw (std::invalid_argument)
