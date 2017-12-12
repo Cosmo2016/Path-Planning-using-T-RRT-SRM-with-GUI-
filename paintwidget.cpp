@@ -132,7 +132,7 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 
     // for debug
     // if (this->person_) {
-    if (true) {
+    if (false) {
         int tmp_x = event->pos().x();
         int tmp_y = event->pos().y();
         //cout << "(" << tmp_x << "," << tmp_y << ")";
