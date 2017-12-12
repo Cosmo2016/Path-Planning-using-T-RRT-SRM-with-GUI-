@@ -114,6 +114,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
             this->human_->updaeFuzzyRules();
             this->human_->setMaxDistants(80);
             this->human_->setMinDistants(25);
+            this->human_->setVelocity(6);
         }
         this->human_->setQPenColor(Qt::green);
         this->human_->setQBrushColor(Qt::green);
@@ -131,7 +132,7 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 
     // for debug
     // if (this->person_) {
-    if (false) {
+    if (true) {
         int tmp_x = event->pos().x();
         int tmp_y = event->pos().y();
         //cout << "(" << tmp_x << "," << tmp_y << ")";
@@ -147,10 +148,10 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
         cout << "Human dir = " << this->human_->getDirection() << endl;
         // cout << " Two points distances = " << distance << endl;
 
-        float includedAngle = searcherAngleWithXAxis - this->human_->getDirection();
+        float includedAngle = searcherAngleWithXAxis - this->human_->getsDirectionByRadian();
         cout << "Included angle = " << includedAngle << endl;
 
-        if (cos(includedAngle / 180 * M_PI) <= 0) {
+        if (cos(includedAngle) <= 0) {
             cout << "Back" <<  endl;
         } else {
             cout << "Front" <<  endl;

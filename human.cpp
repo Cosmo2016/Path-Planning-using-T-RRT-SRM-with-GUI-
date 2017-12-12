@@ -7,7 +7,8 @@ Human::Human()
 {
     this->id_ = Utility::randomRangeNumber(
                 0, pow(2, sizeof(int) * 8 - 1) - 1);
-    this->direction_ = -directionOffset_;
+    this->direction_ = -1;
+    this->directionOffset_ = -1;
     this->velocity_ = -1;
     this->minDistants_ = -1;
     this->maxDistants_ = -1;
@@ -31,7 +32,7 @@ Human::~Human()
 
 void Human::setDirection(float direction) throw (std::invalid_argument)
 {
-    if (direction >= 0 && direction < 360) {
+    if (direction >= 0 && direction <= 360) {
         this->direction_ = direction - directionOffset_;
     } else {
         throw std::invalid_argument("Invalid input number, the angle's range is 0 ~ 360");
@@ -243,10 +244,10 @@ void Human::updaeFuzzyRules()
     // Or store this dates in database
     switch (this->socialRelationArea_) {
     case Human::SocialRelationArea_NormalPersonalArea:
-        this->srmDeviation_.setSigma1(35);
-        this->srmDeviation_.setSigma2(30);
+        this->srmDeviation_.setSigma1(70);
+        this->srmDeviation_.setSigma2(40);
         this->srmDeviation_.setVelocityDev(0.3);
-        this->srmDeviation_.setProbabilityRatio(0.5);
+        this->srmDeviation_.setProbabilityRatio(0.8);
         break;
     case Human::SocialRelationArea_ClosePersonalArea:
         // Add later

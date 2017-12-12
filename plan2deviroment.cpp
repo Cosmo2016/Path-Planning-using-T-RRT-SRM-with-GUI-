@@ -213,7 +213,8 @@ bool Plan2DEviroment::transactionTest(float searchX, float searchY) throw (std::
     float searcherAngleWithXAxis = Utility::getIncludedAngle(this->human_->getAPoint().x(),
                                                              this->human_->getAPoint().y(),
                                                              searchX, searchY);
-    float includedAngle = searcherAngleWithXAxis - this->human_->getsDirectionByRadian();
+    // float includedAngle = searcherAngleWithXAxis - this->human_->getsDirectionByRadian();
+    float includedAngle = this->human_->getsDirectionByRadian() - searcherAngleWithXAxis;
     float distance = Utility::distanceBetween2Points(this->human_->getAPoint().x(),
                                                      this->human_->getAPoint().y(),
                                                      searchX, searchY);
@@ -231,22 +232,22 @@ bool Plan2DEviroment::transactionTest(float searchX, float searchY) throw (std::
             if (cos(includedAngle) <= 0) {
                 // cout << "Back" <<  endl;
                 // betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
-                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma2(), 2));
+                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1(), 2));
             } else {
                 // cout << "Front" <<  endl;
                 betaFront = pow(distance * cos(includedAngle), 2) /
                         (2 * pow(srmDeviation.getSigma1() /
                         (1 + srmDeviation.getVelocityDev() * this->human_->getVelocity()), 2));
             }
-            float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1(), 2));
+            float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(srmDeviation.getSigma2(), 2));
 
-            float beta = (betaFront + betaSide);
-            float p = pow(M_E, -beta * srmDeviation.getProbabilityRatio()) ;
+            float beta = betaFront + betaSide;
+            float p = pow(M_E, - beta * srmDeviation.getProbabilityRatio()) ;
             float radomP = Utility::randomProbability();
             if (radomP < p) {
-                return false;
-            } else {
                 return true;
+            } else {
+                return false;
             }
         } else {
             return true;
