@@ -242,12 +242,13 @@ void Human::updaeFuzzyRules()
     }
 
     // Or store this dates in database
+    this->srmDeviation_ = new SRMDeviation();
     switch (this->socialRelationArea_) {
     case Human::SocialRelationArea_NormalPersonalArea:
-        this->srmDeviation_.setSigma1(70);
-        this->srmDeviation_.setSigma2(40);
-        this->srmDeviation_.setVelocityDev(0.3);
-        this->srmDeviation_.setProbabilityRatio(0.8);
+        this->srmDeviation_->setSigma1(10);
+        this->srmDeviation_->setSigma2(3.8);
+        this->srmDeviation_->setVelocityDev(0.13);
+        this->srmDeviation_->setProbabilityRatio(0.005);
         break;
     case Human::SocialRelationArea_ClosePersonalArea:
         // Add later
@@ -264,7 +265,7 @@ void Human::updaeFuzzyRules()
     }
 }
 
-SRMDeviation Human::getFuzzyRule()
+SRMDeviation* Human::getFuzzyRule()
 {
     return this->srmDeviation_;
 }

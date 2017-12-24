@@ -53,7 +53,7 @@ bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
     ss_->setStartAndGoalStates(start, goal);
 
     // Generate a few solutions; all will be added to the goal;
-    for (int i = 0 ; i < 10 ; ++i) {
+    for (int i = 0 ; i < 10; ++i) {
         // cout << "generate a few solutions; all will be added to the goal " << i << endl;
         if (ss_->getPlanner())
             ss_->getPlanner()->clear();
@@ -63,10 +63,10 @@ bool Plan2DEviroment::plan(unsigned int start_row, unsigned int start_col,
     const std::size_t ns = ss_->getProblemDefinition()->getSolutionCount();
     OMPL_INFORM("Found %d solutions", (int)ns);
     if (ss_->haveSolutionPath()) {
-        ss_->simplifySolution();
-        og::PathGeometric &p = ss_->getSolutionPath();
-        ss_->getPathSimplifier()->simplifyMax(p);
-        ss_->getPathSimplifier()->smoothBSpline(p);
+        // ss_->simplifySolution();
+        // og::PathGeometric &p = ss_->getSolutionPath();
+        // ss_->getPathSimplifier()->simplifyMax(p);
+        // ss_->getPathSimplifier()->smoothBSpline(p);
         return true;
     }
 
@@ -219,39 +219,52 @@ bool Plan2DEviroment::transactionTest(float searchX, float searchY) throw (std::
                                                      this->human_->getAPoint().y(),
                                                      searchX, searchY);
 
-    SRMDeviation srmDeviation = this->human_->getFuzzyRule();
+    SRMDeviation* srmDeviation = this->human_->getFuzzyRule();
 
-    if (!srmDeviation.isEmpty()) {
+    if (srmDeviation) {
         if (distance < this->human_->getMinDistants()) {
+            // failTime_ = 0;
             return false;
         } else if(distance > this->human_->getMinDistants() &&
                   distance < this->human_->getMaxDistants()) {
             // Between min and max distances
-            float betaFront = 0;
+            // float betaFront = 0;
+            float beta = 0;
             // if (cos(includedAngle / 180 * M_PI) <= 0) {
             if (cos(includedAngle) <= 0) {
                 // cout << "Back" <<  endl;
                 // betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(STD_DEV_1 / (1 + FF * VN), 2));
-                betaFront = pow(distance * cos(includedAngle), 2) /
-                        (2 * pow(srmDeviation.getSigma1() /
-                        (1 + srmDeviation.getVelocityDev() * this->human_->getVelocity()), 2));
+                // betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation->getSigma1(), 2));
+                beta = pow(M_E, 0.04 * (distance - 30)) * (6 * pow(sin(includedAngle), 2) + 10 * pow(cos(includedAngle), 2));
+
             } else {
                 // cout << "Front" <<  endl;
-                betaFront = pow(distance * cos(includedAngle), 2) / (2 * pow(srmDeviation.getSigma1(), 2));
+                /*betaFront = pow(distance * cos(includedAngle), 2) /
+                        (2 * pow(srmDeviation->getSigma1() /
+                        (1 + srmDeviation->getVelocityDev() * this->human_->getVelocity()), 2));*/
+                /*betaFront = pow(distance * cos(includedAngle), 2) /
+                        (2 * pow(srmDeviation->getSigma1() /
+                        (1 - srmDeviation->getVelocityDev() * this->human_->getVelocity()), 2));*/
+                beta = pow(M_E, 0.04 * (distance - 30)) * (4 * pow(cos(includedAngle), 2) + 6 * pow(sin(includedAngle), 2));
             }
-            float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(srmDeviation.getSigma2(), 2));
+            // float betaSide = pow(distance * sin(includedAngle), 2) / (2 * pow(srmDeviation->getSigma2(), 2));
 
-            float beta = betaFront + betaSide;
-            float p = pow(M_E, - beta * srmDeviation.getProbabilityRatio()) ;
+            // float beta = betaFront + betaSide;
+            // float p = pow(M_E, - beta * srmDeviation->getProbabilityRatio());
+            // float p = pow(1 / M_E, beta * srmDeviation->getProbabilityRatio());
+            float p = pow(1 / M_E, 0.05 * beta);
             float radomP = Utility::randomProbability();
-            if (radomP < p) {
-                return false;
-            } else {
+            // if (radomP < p) {
+            if (radomP < (1 - p)) {
                 return true;
+            } else {
+                return false;
             }
         } else {
             return true;
         }
+    } else {
+        return true;
     }
 }
 
@@ -259,6 +272,7 @@ void Plan2DEviroment::setHuman(Human *human)
 {
     this->human_ = human;
 }
+
 Human* Plan2DEviroment::getHuman() const
 {
     return this->human_;

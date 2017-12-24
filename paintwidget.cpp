@@ -112,9 +112,9 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
             this->human_->setRelation(Human::Relation_Stranger);
             this->human_->setRoughDistance(Human::RoughDistance_Far);
             this->human_->updaeFuzzyRules();
-            this->human_->setMaxDistants(80);
+            this->human_->setMaxDistants(100);
             this->human_->setMinDistants(25);
-            this->human_->setVelocity(6);
+            this->human_->setVelocity(10);
         }
         this->human_->setQPenColor(Qt::green);
         this->human_->setQBrushColor(Qt::green);

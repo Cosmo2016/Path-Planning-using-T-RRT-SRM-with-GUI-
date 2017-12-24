@@ -1,4 +1,5 @@
 #include "srmdeviation.h"
+#include <iostream>
 
 SRMDeviation::SRMDeviation()
 {
@@ -45,9 +46,10 @@ float SRMDeviation::getVelocityDev() const
     return this->velocityDev_;
 }
 
-void SRMDeviation::setProbabilityRatio(float probabilityRatio_)
+void SRMDeviation::setProbabilityRatio(float probabilityRatio)
 {
-    this->probabilityRatio_ = probabilityRatio_;
+    std::cout << "Set probability ratio = " << probabilityRatio << std::endl;
+    this->probabilityRatio_ = probabilityRatio;
 }
 
 float SRMDeviation::getProbabilityRatio() const

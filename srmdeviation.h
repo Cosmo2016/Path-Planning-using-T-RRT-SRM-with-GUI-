@@ -25,7 +25,7 @@ protected:
     float sigma1_;
     float sigma2_;
     float velocityDev_;
-    float probabilityRatio_;
+    double probabilityRatio_;
 };
 
 #endif // SRMDEVIATION_H

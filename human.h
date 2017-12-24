@@ -69,7 +69,7 @@ public:
     void setRoughDistance(Human::RoughDistance);
     Human::RoughDistance getRoughDistance() const;
 
-    SRMDeviation getFuzzyRule();
+    SRMDeviation* getFuzzyRule();
     void updaeFuzzyRules();
 
     void paint(QPaintDevice *) override;
@@ -88,7 +88,7 @@ protected:
     Human::Relation relation_;
     Human::RoughDistance roughDistance_;
     Human::SocialRelationArea socialRelationArea_;
-    SRMDeviation srmDeviation_;
+    SRMDeviation *srmDeviation_;
 
     Human::SocialRelationArea getSocialRelationArea();
 };
